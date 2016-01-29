@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -181,10 +182,13 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String[] result) {
-            if (result != null) {
-                movieAdapter.notifyDataSetChanged();
-                movieRecyclerView.setAdapter(movieAdapter);
-            }
+            //if (result != null) {
+                movieDataset = new String[10];
+                for(int i = 0; i < movieDataset.length; i++) {
+                    movieDataset[i] = "http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg";
+                }
+                ((MovieGridAdapter)movieAdapter).updateData(movieDataset);
+           // }
         }
     }
 }

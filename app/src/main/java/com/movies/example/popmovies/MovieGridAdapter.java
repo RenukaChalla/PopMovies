@@ -54,7 +54,9 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Picasso.with(context).load(movieAdapterDataset[position]).into(holder.picassoimg);
+        if(movieAdapterDataset != null) {
+            Picasso.with(context).load(movieAdapterDataset[position]).into(holder.picassoimg);
+        }
 
     }
 
@@ -62,5 +64,11 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     @Override
     public int getItemCount() {
         return movieAdapterDataset.length;
+    }
+
+    public void updateData(String [] movieDataset){
+        this.movieAdapterDataset = movieDataset;
+        notifyDataSetChanged();
+
     }
 }
