@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,17 +26,41 @@ import java.net.URL;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+    private RecyclerView movieRecyclerView;
+    private RecyclerView.Adapter movieAdapter;
+    private RecyclerView.LayoutManager movieLayoutManager;
+    String[] movieDataset;
 
     public MainActivityFragment() {
     }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View rootview = inflater.inflate(R.layout.fragment_main, container, false);
-        Intent recyclerIntent = new Intent(getActivity(), MovieGridActivity.class);
-        startActivity(recyclerIntent);
+        movieRecyclerView = (RecyclerView) rootview.findViewById(R.id.my_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        movieRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        movieLayoutManager = new GridLayoutManager(getContext(), 2);
+        movieRecyclerView.setLayoutManager(movieLayoutManager);
+
+        // specify an adapter (see also next example)
+        movieDataset = new String[10];
+        for(int i = 0; i < movieDataset.length; i++)
+        {
+            movieDataset[i] = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
+        }
+        movieAdapter = new MovieGridAdapter(getContext(), movieDataset);
+        movieRecyclerView.setAdapter(movieAdapter);
         updateMoviesList();
         setHasOptionsMenu(true);
         return rootview;
@@ -87,7 +113,7 @@ public class MainActivityFragment extends Fragment {
             try {
                 final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
 //                        "http://api.themoviedb.org/3/discover/movie?" +
-//                        "sort_by=popularity.desc&api_key=59e683964a505dd3a880069f65e8310e";
+//                        "sort_by=popularity.desc&api_key=apikey";
 
                 final String SORT_BY = "sort_by";
                 final String APPID_PARAMS = "api_key";
@@ -156,7 +182,8 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(String[] result) {
             if (result != null) {
-                MovieGridAdapter movieadapter = new MovieGridAdapter(getContext(), result);
+                movieAdapter.notifyDataSetChanged();
+                movieRecyclerView.setAdapter(movieAdapter);
             }
         }
     }
