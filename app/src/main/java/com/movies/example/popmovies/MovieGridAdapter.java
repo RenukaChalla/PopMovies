@@ -54,7 +54,8 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Picasso.with(context).load(movieAdapterDataset[position]).into(holder.picassoimg);
+        Picasso.with(context).load(movieAdapterDataset[position]).resize(50, 50)
+                .centerCrop().into(holder.picassoimg);
 
     }
 
