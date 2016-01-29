@@ -27,6 +27,7 @@ import java.net.URL;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+
     private RecyclerView movieRecyclerView;
     private RecyclerView.Adapter movieAdapter;
     private RecyclerView.LayoutManager movieLayoutManager;
@@ -34,11 +35,7 @@ public class MainActivityFragment extends Fragment {
 
     public MainActivityFragment() {
     }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,7 +63,6 @@ public class MainActivityFragment extends Fragment {
         setHasOptionsMenu(true);
         return rootview;
     }
-
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_main, menu);
@@ -77,7 +73,6 @@ public class MainActivityFragment extends Fragment {
         fetchMoviesTask.execute("popularity.desc");
 
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -91,7 +86,6 @@ public class MainActivityFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
     private class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
 
 
@@ -183,12 +177,13 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(String[] result) {
             //if (result != null) {
-                movieDataset = new String[10];
-                for(int i = 0; i < movieDataset.length; i++) {
-                    movieDataset[i] = "http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg";
-                }
-                ((MovieGridAdapter)movieAdapter).updateData(movieDataset);
-           // }
+            movieDataset = new String[10];
+            for(int i = 0; i < movieDataset.length; i++) {
+                movieDataset[i] = "http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg";
+            }
+            ((MovieGridAdapter)movieAdapter).updateData(movieDataset);
+            // }
         }
     }
 }
+
