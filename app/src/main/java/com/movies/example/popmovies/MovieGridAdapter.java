@@ -15,7 +15,8 @@ import com.squareup.picasso.Picasso;
  */
 
 public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.ViewHolder> {
-    private ImageView[] movieAdapterDataset;
+    private String[] movieAdapterDataset;
+    private Context context;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -31,8 +32,9 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MovieGridAdapter(ImageView[] movieDataset) {
+    public MovieGridAdapter(Context context, String[] movieDataset) {
         movieAdapterDataset = movieDataset;
+        this.context = context;
     }
 
     // Create new views (invoked by the layout manager)
@@ -52,9 +54,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        //holder.picassoimg = (movieAdapterDataset[position]);
-        Context context = holder.picassoimg.getContext();
-        Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(holder.picassoimg);
+        Picasso.with(context).load(movieAdapterDataset[position]).into(holder.picassoimg);
 
     }
 

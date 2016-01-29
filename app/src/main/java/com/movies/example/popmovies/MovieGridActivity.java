@@ -12,7 +12,7 @@ public class MovieGridActivity extends AppCompatActivity {
     private RecyclerView movieRecyclerView;
     private RecyclerView.Adapter movieAdapter;
     private RecyclerView.LayoutManager movieLayoutManager;
-    ImageView[] movieDataset;
+    String[] movieDataset;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,14 +28,12 @@ public class MovieGridActivity extends AppCompatActivity {
         movieRecyclerView.setLayoutManager(movieLayoutManager);
 
         // specify an adapter (see also next example)
-        movieDataset = new ImageView[10];
+        movieDataset = new String[10];
         for(int i = 0; i < movieDataset.length; i++)
         {
-            ImageView mImageView = new ImageView(this);
-            Picasso.with(mImageView.getContext()).load("http://i.imgur.com/DvpvklR.png").into(mImageView);
-            movieDataset[i] = mImageView;
+            movieDataset[i] = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
         }
-        movieAdapter = new MovieGridAdapter(movieDataset);
+        movieAdapter = new MovieGridAdapter(this, movieDataset);
         movieRecyclerView.setAdapter(movieAdapter);
     }
 }
