@@ -1,13 +1,16 @@
 package com.movies.example.popmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +18,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,7 +39,7 @@ public class MainActivityFragment extends Fragment {
     private RecyclerView.Adapter movieAdapter;
     private RecyclerView.LayoutManager movieLayoutManager;
     String[] movieDataset;
-
+    private final String LOG_TAG = getClass().getName().toString();
     public MainActivityFragment() {
     }
 
@@ -75,12 +82,7 @@ public class MainActivityFragment extends Fragment {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -99,8 +101,6 @@ public class MainActivityFragment extends Fragment {
             }
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-
-            // Will contain the raw JSON response as a string.
             String moviesJSONStr = null;
             String sortBy = params[0];
             String apikey = BuildConfig.THE_MOVIES_DB_API_KEY;
@@ -123,21 +123,15 @@ public class MainActivityFragment extends Fragment {
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
-
-                // Read the input stream into a String
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
-                    // Nothing to do.
                     moviesJSONStr = null;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
                     buffer.append(line + "\n");
                 }
 
@@ -147,12 +141,11 @@ public class MainActivityFragment extends Fragment {
                 }
                 moviesJSONStr = buffer.toString();
                 Log.v(LOG_TAG, "Movies JSON String: " + moviesJSONStr);
-                //return moviesJSONStr;
                 return getMovieDataFromJSON(moviesJSONStr);
             } catch (IOException e) {
+                Log.e(LOG_TAG, "IO Error ", e);
+            } catch (JSONException e) {
                 Log.e(LOG_TAG, "JSON Error " + moviesJSONStr, e);
-
-                moviesJSONStr = null;
             } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
@@ -167,13 +160,6 @@ public class MainActivityFragment extends Fragment {
             }
             return null;
         }
-
-        private String[] getMovieDataFromJSON(String moviesJSONStr) {
-            String[] movieURLs = null;
-            return movieURLs;
-
-        }
-
         @Override
         protected void onPostExecute(String[] result) {
             //if (result != null) {
@@ -184,6 +170,46 @@ public class MainActivityFragment extends Fragment {
             ((MovieGridAdapter)movieAdapter).updateData(movieDataset);
             // }
         }
+    }
+    private String[] getMovieDataFromJSON(String moviesJSONStr)
+            throws JSONException {
+
+        // These are the names of the JSON objects that need to be extracted.
+        final String DBM_LIST = "results";
+        final String DBM_MOVIE = "movie";
+        final String DBM_TITLE = "title";
+        final String DBM_POSTER_PATH = "poster_path";
+        final String DBM_OVERVIEW = "overview";
+        final String DBM_RATING = "vote_average";
+        final String DBM_DATE = "release_date";
+
+
+        JSONObject movieJSON = new JSONObject(moviesJSONStr);
+        JSONArray movieArray = movieJSON.getJSONArray(DBM_LIST);
+        String [] posterPaths  = new String[movieArray.length()];
+
+        for (int i = 0; i < movieArray.length(); i++) {
+            String title;
+            String poster;
+            String overview;
+            String rating;
+            String release_date;
+            JSONObject movieDetails = movieArray.getJSONObject(i);
+            //JSONObject movieObject = movieDetails.getJSONArray(DBM_MOVIE).getJSONObject(0);
+            title = movieDetails.getString(DBM_TITLE);
+            poster = movieDetails.getString(DBM_POSTER_PATH);
+            overview = movieDetails.getString(DBM_OVERVIEW);
+            rating = movieDetails.getString(DBM_RATING);
+            release_date = movieDetails.getString(DBM_DATE);
+            posterPaths[i] = poster;
+        }
+
+
+        for (String s : posterPaths) {
+            Log.v(LOG_TAG, "Movie poster path " + s);
+        }
+        return posterPaths;
+
     }
 }
 
