@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,6 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.movies.example.popmovies.model.response.Movie;
+import com.movies.example.popmovies.model.response.MovieResponse;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +36,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -40,7 +50,7 @@ public class MainActivityFragment extends Fragment {
     private RecyclerView movieRecyclerView;
     private RecyclerView.Adapter movieAdapter;
     private RecyclerView.LayoutManager movieLayoutManager;
-    String[] movieDataset;
+    private List<Movie> movieDataset ;
     private final String LOG_TAG = getClass().getName().toString();
     public MainActivityFragment() {
     }
@@ -49,6 +59,7 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(getClass().getName(), "onCreateView");
         View rootview = inflater.inflate(R.layout.fragment_main, container, false);
         movieRecyclerView = (RecyclerView) rootview.findViewById(R.id.my_recycler_view);
 
@@ -61,13 +72,167 @@ public class MainActivityFragment extends Fragment {
         movieRecyclerView.setLayoutManager(movieLayoutManager);
 
         // specify an adapter (see also next example)
-        movieDataset = new String[10];
-        for(int i = 0; i < movieDataset.length; i++)
-        {
-            movieDataset[i] = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
-        }
+//        Movie movie = new Movie();
+//        movie.poster_path = "dsfsdg";
+//        movie.adult=true;
+//        movie.overview="overview";
+//        movie.release_date ="Date";
+//        movie.genreIds = new ArrayList<>();
+//        movie.id =124;
+//        movie.original_title="jbsg";
+//        movie.original_language = "jng";
+//        movie.title = "kng";
+//        movie.backdrop_path ="sjdng";
+//        movie.popularity = (float)4;
+//        movie.vote_count = 7;
+//        movie.video = false;
+//        movie.vote_average =(float)6.7;
+//
+//        Movie movie1 = new Movie();
+//        movie1.poster_path = "dsfsdg";
+//        movie1.adult=true;
+//        movie1.overview="overview";
+//        movie1.release_date ="Date";
+//        movie1.genreIds = new ArrayList<>();
+//        movie1.id =124;
+//        movie1.original_title="jbsg";
+//        movie1.original_language = "jng";
+//        movie1.title = "kng";
+//        movie1.backdrop_path ="sjdng";
+//        movie1.popularity = (float)4;
+//        movie1.vote_count = 7;
+//        movie1.video = false;
+//        movie1.vote_average =(float)6.7;
+        movieDataset = new List<Movie>() {
+            @Override
+            public void add(int location, Movie object) {
+
+            }
+
+            @Override
+            public boolean add(Movie object) {
+                return true;
+            }
+
+            @Override
+            public boolean addAll(int location, Collection<? extends Movie> collection) {
+                return false;
+            }
+
+            @Override
+            public boolean addAll(Collection<? extends Movie> collection) {
+                return false;
+            }
+
+            @Override
+            public void clear() {
+
+            }
+
+            @Override
+            public boolean contains(Object object) {
+                return false;
+            }
+
+            @Override
+            public boolean containsAll(Collection<?> collection) {
+                return false;
+            }
+
+            @Override
+            public Movie get(int location) {
+                return null;
+            }
+
+            @Override
+            public int indexOf(Object object) {
+                return 0;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            public Iterator<Movie> iterator() {
+                return null;
+            }
+
+            @Override
+            public int lastIndexOf(Object object) {
+                return 0;
+            }
+
+            @Override
+            public ListIterator<Movie> listIterator() {
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public ListIterator<Movie> listIterator(int location) {
+                return null;
+            }
+
+            @Override
+            public Movie remove(int location) {
+                return null;
+            }
+
+            @Override
+            public boolean remove(Object object) {
+                return false;
+            }
+
+            @Override
+            public boolean removeAll(Collection<?> collection) {
+                return false;
+            }
+
+            @Override
+            public boolean retainAll(Collection<?> collection) {
+                return false;
+            }
+
+            @Override
+            public Movie set(int location, Movie object) {
+                return null;
+            }
+
+            @Override
+            public int size() {
+                return 0;
+            }
+
+            @NonNull
+            @Override
+            public List<Movie> subList(int start, int end) {
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public Object[] toArray() {
+                return new Object[0];
+            }
+
+            @NonNull
+            @Override
+            public <T> T[] toArray(T[] array) {
+                return null;
+            }
+        };
+//        movieDataset.add(movie);
+//        movieDataset.add(movie1);
+//        for(int i = 0; i < movieDataset.size(); i++)
+//        {
+//            Log.v(LOG_TAG, "Original title: " + movieDataset.get(i).original_title.toString());
+//        }
         movieAdapter = new MovieGridAdapter(movieDataset);
         movieRecyclerView.setAdapter(movieAdapter);
+
 
         updateMoviesList();
         setHasOptionsMenu(true);
@@ -99,25 +264,32 @@ public class MainActivityFragment extends Fragment {
     }
 
     public void updateMoviesList() {
+        SharedPreferences sharedPrefs =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortby = sharedPrefs.getString(
+                getString(R.string.pref_key_sort_by),
+                getString(R.string.pref_popularity_sort_by));
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-        fetchMoviesTask.execute("popularity.desc");
+        fetchMoviesTask.execute(sortby);
 
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            return true;
+                Intent settingsIntent = new Intent(getActivity(),SettingsActivity.class);
+                startActivity(settingsIntent);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    private class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
+    private class FetchMoviesTask extends AsyncTask<String, Void, List<Movie>> {
 
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected List<Movie> doInBackground(String... params) {
 
             if (params.length == 0) {
                 return null;
@@ -129,14 +301,21 @@ public class MainActivityFragment extends Fragment {
             String apikey = BuildConfig.THE_MOVIES_DB_API_KEY;
 
             try {
-                final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
+                String MOVIES_BASE_URL ;
 //                        "http://api.themoviedb.org/3/discover/movie?" +
 //                        "sort_by=popularity.desc&api_key=apikey";
-
+                String sortbyparam;
                 final String SORT_BY = "sort_by";
+                if(sortBy == "popularity"){
+                    MOVIES_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
+                    sortbyparam = "popularity.desc";
+                } else{
+                    MOVIES_BASE_URL = "http://api.themoviedb.org/3/discover/movie?certification_country=US&certification=R";
+                    sortbyparam = "vote_average.desc";
+                }
                 final String APPID_PARAMS = "api_key";
                 Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
-                        .appendQueryParameter(SORT_BY, sortBy)
+                        .appendQueryParameter(SORT_BY, sortbyparam)
                         .appendQueryParameter(APPID_PARAMS, apikey)
                         .build();
 
@@ -181,48 +360,30 @@ public class MainActivityFragment extends Fragment {
             return null;
         }
         @Override
-        protected void onPostExecute(String[] result) {
-            if (result != null) {
-                movieDataset = result;
-                for (String s : movieDataset) {
-                    Log.v(LOG_TAG, s);
+        protected void onPostExecute(List<Movie> movieList) {
+            if (movieList != null) {
+                movieDataset = movieList;
+
+                for ( Movie movie : movieList) {
+                    if(movie.poster_path !="") {
+                        Log.v(LOG_TAG," Poster Path  :" +"http://image.tmdb.org/t/p/w185/"+movie.poster_path);
+                    }
+                    //movieDataset.add(movie);
                 }
                 ((MovieGridAdapter) movieAdapter).updateData(movieDataset);
             }
         }
     }
-    private String[] getMovieDataFromJSON(String moviesJSONStr)
+    private List<Movie> getMovieDataFromJSON(String moviesJSONStr)
             throws JSONException {
 
-        // These are the names of the JSON objects that need to be extracted.
-        final String DBM_LIST = "results";
-        final String DBM_TITLE = "title";
-        final String DBM_POSTER_PATH = "poster_path";
-        final String DBM_OVERVIEW = "overview";
-        final String DBM_RATING = "vote_average";
-        final String DBM_DATE = "release_date";
-        JSONObject movieJSON = new JSONObject(moviesJSONStr);
-        JSONArray movieArray = movieJSON.getJSONArray(DBM_LIST);
-        String [] posterPaths  = new String[movieArray.length()];
-
-        for (int i = 0; i < movieArray.length(); i++) {
-            String title;
-            String poster;
-            String overview;
-            String rating;
-            String release_date;
-            JSONObject movieDetails = movieArray.getJSONObject(i);
-            title = movieDetails.getString(DBM_TITLE);
-            poster = movieDetails.getString(DBM_POSTER_PATH);
-            overview = movieDetails.getString(DBM_OVERVIEW);
-            rating = movieDetails.getString(DBM_RATING);
-            release_date = movieDetails.getString(DBM_DATE);
-            posterPaths[i] = "http://image.tmdb.org/t/p/w185/"+ poster ;
+        Gson gson = new Gson();
+        MovieResponse moviesList = gson.fromJson(moviesJSONStr, MovieResponse.class);
+        List<Movie> movieArray = moviesList.results;
+        for(Movie movie : movieArray){
+            Log.v(LOG_TAG," Poster Path  :" +"http://image.tmdb.org/t/p/w185/"+movie.poster_path);
         }
-        for (String s : posterPaths) {
-            Log.v(LOG_TAG, "Movie poster path " + s);
-        }
-        return posterPaths;
+        return movieArray;
     }
 }
 

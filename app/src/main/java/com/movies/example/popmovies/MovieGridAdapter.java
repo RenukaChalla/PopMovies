@@ -1,6 +1,7 @@
 package com.movies.example.popmovies;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,14 +10,20 @@ import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 
+import com.movies.example.popmovies.model.response.Movie;
 import com.squareup.picasso.Picasso;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by admin on 28/01/16.
  */
 
 public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.ViewHolder> {
-    private String[] movieAdapterDataset;
+    private List<Movie> movieAdapterDataset ;
 
     private static ItemClickListener itemClickListener;
     public static class ViewHolder extends RecyclerView.ViewHolder
@@ -42,7 +49,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MovieGridAdapter(String[] movieDataset) {
+    public MovieGridAdapter(List<Movie> movieDataset) {
         if(movieDataset != null) {
             movieAdapterDataset = movieDataset;
         }
@@ -64,8 +71,10 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        if(movieAdapterDataset != null) {
-            Picasso.with(holder.picassoimg.getContext()).load(movieAdapterDataset[position]).into(holder.picassoimg);
+        if(movieAdapterDataset.get(position) != null) {
+            String posterURL = "http://image.tmdb.org/t/p/w185/"+movieAdapterDataset.get(position).poster_path;
+            Log.v("In adapter", posterURL);
+            Picasso.with(holder.picassoimg.getContext()).load(posterURL).into(holder.picassoimg);
         }
         else
             Picasso.with(holder.picassoimg.getContext()).load("http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg").into(holder.picassoimg);
@@ -73,10 +82,11 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return movieAdapterDataset.length;
+        return movieAdapterDataset.size();
     }
-    public void updateData(String [] movieDataset){
-        this.movieAdapterDataset = movieDataset;
+    public void updateData(List<Movie> movieDataset){
+        movieAdapterDataset.clear();
+        movieAdapterDataset = movieDataset;
         notifyDataSetChanged();
     }
     public interface ItemClickListener {
