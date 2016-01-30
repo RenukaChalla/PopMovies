@@ -163,9 +163,10 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(String[] result) {
             //if (result != null) {
-            movieDataset = new String[10];
-            for(int i = 0; i < movieDataset.length; i++) {
-                movieDataset[i] = "http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg";
+
+            movieDataset = result;
+            for(String s: movieDataset){
+                Log.v(LOG_TAG, s);
             }
             ((MovieGridAdapter)movieAdapter).updateData(movieDataset);
             // }
@@ -201,7 +202,7 @@ public class MainActivityFragment extends Fragment {
             overview = movieDetails.getString(DBM_OVERVIEW);
             rating = movieDetails.getString(DBM_RATING);
             release_date = movieDetails.getString(DBM_DATE);
-            posterPaths[i] = poster;
+            posterPaths[i] = "http://image.tmdb.org/t/p/w185/"+ poster ;
         }
 
 
