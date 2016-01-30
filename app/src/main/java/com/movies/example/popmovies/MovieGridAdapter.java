@@ -67,6 +67,8 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
         if(movieAdapterDataset != null) {
             Picasso.with(holder.picassoimg.getContext()).load(movieAdapterDataset[position]).into(holder.picassoimg);
         }
+        else
+            Picasso.with(holder.picassoimg.getContext()).load("http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg").into(holder.picassoimg);
     }
     // Return the size of your dataset (invoked by the layout manager)
     @Override

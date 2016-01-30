@@ -89,6 +89,11 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(int position, View v) {
                 Log.i(LOG_TAG, " Clicked on Item " + position);
+                Intent movieDetailsIntent  = new Intent(getActivity(), MovieDetails.class);
+                startActivity(movieDetailsIntent);
+                movieDetailsIntent.setType("text/plain");
+                movieDetailsIntent.putExtra(Intent.EXTRA_TEXT,position);
+
             }
         });
     }
