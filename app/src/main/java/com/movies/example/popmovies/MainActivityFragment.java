@@ -24,9 +24,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -64,8 +66,9 @@ public class MainActivityFragment extends Fragment {
         {
             movieDataset[i] = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
         }
-        movieAdapter = new MovieGridAdapter(getContext(), movieDataset);
+        movieAdapter = new MovieGridAdapter(movieDataset);
         movieRecyclerView.setAdapter(movieAdapter);
+
         updateMoviesList();
         setHasOptionsMenu(true);
         return rootview;
@@ -73,6 +76,21 @@ public class MainActivityFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+        super.dump(prefix, fd, writer, args);
+    }
+
+    public void onResume() {
+        super.onResume();
+        ((MovieGridAdapter) movieAdapter).setOnItemClickListener(new MovieGridAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Log.i(LOG_TAG, " Clicked on Item " + position);
+            }
+        });
     }
 
     public void updateMoviesList() {
@@ -129,14 +147,11 @@ public class MainActivityFragment extends Fragment {
                     moviesJSONStr = null;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
-
                 String line;
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line + "\n");
                 }
-
                 if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
                     moviesJSONStr = null;
                 }
                 moviesJSONStr = buffer.toString();
@@ -162,14 +177,13 @@ public class MainActivityFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(String[] result) {
-            //if (result != null) {
-
-            movieDataset = result;
-            for(String s: movieDataset){
-                Log.v(LOG_TAG, s);
+            if (result != null) {
+                movieDataset = result;
+                for (String s : movieDataset) {
+                    Log.v(LOG_TAG, s);
+                }
+                ((MovieGridAdapter) movieAdapter).updateData(movieDataset);
             }
-            ((MovieGridAdapter)movieAdapter).updateData(movieDataset);
-            // }
         }
     }
     private String[] getMovieDataFromJSON(String moviesJSONStr)
@@ -177,14 +191,11 @@ public class MainActivityFragment extends Fragment {
 
         // These are the names of the JSON objects that need to be extracted.
         final String DBM_LIST = "results";
-        final String DBM_MOVIE = "movie";
         final String DBM_TITLE = "title";
         final String DBM_POSTER_PATH = "poster_path";
         final String DBM_OVERVIEW = "overview";
         final String DBM_RATING = "vote_average";
         final String DBM_DATE = "release_date";
-
-
         JSONObject movieJSON = new JSONObject(moviesJSONStr);
         JSONArray movieArray = movieJSON.getJSONArray(DBM_LIST);
         String [] posterPaths  = new String[movieArray.length()];
@@ -196,7 +207,6 @@ public class MainActivityFragment extends Fragment {
             String rating;
             String release_date;
             JSONObject movieDetails = movieArray.getJSONObject(i);
-            //JSONObject movieObject = movieDetails.getJSONArray(DBM_MOVIE).getJSONObject(0);
             title = movieDetails.getString(DBM_TITLE);
             poster = movieDetails.getString(DBM_POSTER_PATH);
             overview = movieDetails.getString(DBM_OVERVIEW);
@@ -204,13 +214,10 @@ public class MainActivityFragment extends Fragment {
             release_date = movieDetails.getString(DBM_DATE);
             posterPaths[i] = "http://image.tmdb.org/t/p/w185/"+ poster ;
         }
-
-
         for (String s : posterPaths) {
             Log.v(LOG_TAG, "Movie poster path " + s);
         }
         return posterPaths;
-
     }
 }
 
