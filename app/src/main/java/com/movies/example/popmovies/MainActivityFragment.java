@@ -306,7 +306,7 @@ public class MainActivityFragment extends Fragment {
 //                        "sort_by=popularity.desc&api_key=apikey";
                 String sortbyparam;
                 final String SORT_BY = "sort_by";
-                if(sortBy == "popularity"){
+                if(sortBy.equalsIgnoreCase("popularity")){
                     MOVIES_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
                     sortbyparam = "popularity.desc";
                 } else{
