@@ -70,39 +70,6 @@ public class MainActivityFragment extends Fragment {
         // use a linear layout manager
         movieLayoutManager = new GridLayoutManager(getContext(), 2);
         movieRecyclerView.setLayoutManager(movieLayoutManager);
-
-        // specify an adapter (see also next example)
-//        Movie movie = new Movie();
-//        movie.poster_path = "dsfsdg";
-//        movie.adult=true;
-//        movie.overview="overview";
-//        movie.release_date ="Date";
-//        movie.genreIds = new ArrayList<>();
-//        movie.id =124;
-//        movie.original_title="jbsg";
-//        movie.original_language = "jng";
-//        movie.title = "kng";
-//        movie.backdrop_path ="sjdng";
-//        movie.popularity = (float)4;
-//        movie.vote_count = 7;
-//        movie.video = false;
-//        movie.vote_average =(float)6.7;
-//
-//        Movie movie1 = new Movie();
-//        movie1.poster_path = "dsfsdg";
-//        movie1.adult=true;
-//        movie1.overview="overview";
-//        movie1.release_date ="Date";
-//        movie1.genreIds = new ArrayList<>();
-//        movie1.id =124;
-//        movie1.original_title="jbsg";
-//        movie1.original_language = "jng";
-//        movie1.title = "kng";
-//        movie1.backdrop_path ="sjdng";
-//        movie1.popularity = (float)4;
-//        movie1.vote_count = 7;
-//        movie1.video = false;
-//        movie1.vote_average =(float)6.7;
         movieDataset = new List<Movie>() {
             @Override
             public void add(int location, Movie object) {
@@ -224,12 +191,6 @@ public class MainActivityFragment extends Fragment {
                 return null;
             }
         };
-//        movieDataset.add(movie);
-//        movieDataset.add(movie1);
-//        for(int i = 0; i < movieDataset.size(); i++)
-//        {
-//            Log.v(LOG_TAG, "Original title: " + movieDataset.get(i).original_title.toString());
-//        }
         movieAdapter = new MovieGridAdapter(movieDataset);
         movieRecyclerView.setAdapter(movieAdapter);
 
@@ -280,6 +241,9 @@ public class MainActivityFragment extends Fragment {
                 Intent settingsIntent = new Intent(getActivity(),SettingsActivity.class);
                 startActivity(settingsIntent);
                 return true;
+        }
+        if (id == R.id.action_favorite) {
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

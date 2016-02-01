@@ -6,8 +6,9 @@
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
-    <item android:id="@+id/action_refresh"
-        android:title="@string/action_refresh"
+    <item android:id="@+id/action_favorite"
+        android:title="@string/action_favorite"
         android:orderInCategory="100"
         app:showAsAction="never" />
+
 </menu>
