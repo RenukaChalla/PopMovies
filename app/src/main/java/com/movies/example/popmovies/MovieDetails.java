@@ -13,9 +13,11 @@ public class MovieDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_details);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.movie_detail_container, new MovieDetailsFragment())
+                    .commit();
+        }
     }
 
 }

@@ -55,154 +55,154 @@ public class MovieDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_movie_details, container, false);
-        Bundle bundle = getActivity().getIntent().getExtras();
-        String movieJson = bundle.getString("movie_json", "");
-        Movie movie = new Gson().fromJson(movieJson, Movie.class);
-        TextView title = (TextView) rootview.findViewById(R.id.movie_details_title_textview);
-        TextView rating = (TextView) rootview.findViewById(R.id.movie_details_rating_textview);
-        TextView date = (TextView) rootview.findViewById(R.id.movie_details_release_date_textview);
-        TextView overview = (TextView) rootview.findViewById(R.id.movie_details_overview_textview);
-        ImageView poster = (ImageView) rootview.findViewById(R.id.movie_details_poster_imageview);
-        title.setText(movie.title);
-        rating.setText(movie.vote_average.toString() + "/10");
-        overview.setText(movie.overview);
-        date.setText(movie.release_date);
-        String posterURL = "http://image.tmdb.org/t/p/w185/" + movie.poster_path;
-        Picasso.with(poster.getContext()).load(posterURL).into(poster);
-        Log.v("Movie Details: ", movie.title);
-        trailerRecyclerView = (RecyclerView) rootview.findViewById(R.id.recycler_view);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        //trailerRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        trailerLayoutManager = new LinearLayoutManager(getContext());
-        trailerRecyclerView.setLayoutManager(trailerLayoutManager);
-        getTrailerUrl(movie.id.toString());
-        trailerDataset = new List<TrailerDetails>() {
-            @Override
-            public void add(int location, TrailerDetails object) {
-
-            }
-
-            @Override
-            public boolean add(TrailerDetails object) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(int location, Collection<? extends TrailerDetails> collection) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(Collection<? extends TrailerDetails> collection) {
-                return false;
-            }
-
-            @Override
-            public void clear() {
-
-            }
-
-            @Override
-            public boolean contains(Object object) {
-                return false;
-            }
-
-            @Override
-            public boolean containsAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public TrailerDetails get(int location) {
-                return null;
-            }
-
-            @Override
-            public int indexOf(Object object) {
-                return 0;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-
-            @NonNull
-            @Override
-            public Iterator<TrailerDetails> iterator() {
-                return null;
-            }
-
-            @Override
-            public int lastIndexOf(Object object) {
-                return 0;
-            }
-
-            @Override
-            public ListIterator<TrailerDetails> listIterator() {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public ListIterator<TrailerDetails> listIterator(int location) {
-                return null;
-            }
-
-            @Override
-            public TrailerDetails remove(int location) {
-                return null;
-            }
-
-            @Override
-            public boolean remove(Object object) {
-                return false;
-            }
-
-            @Override
-            public boolean removeAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public boolean retainAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public TrailerDetails set(int location, TrailerDetails object) {
-                return null;
-            }
-
-            @Override
-            public int size() {
-                return 0;
-            }
-
-            @NonNull
-            @Override
-            public List<TrailerDetails> subList(int start, int end) {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public Object[] toArray() {
-                return new Object[0];
-            }
-
-            @NonNull
-            @Override
-            public <T> T[] toArray(T[] array) {
-                return null;
-            }
-        };
-        trailerAdapter = new TrailerNReviewAdapter(trailerDataset);
-        trailerRecyclerView.setAdapter(trailerAdapter);
+//        Bundle bundle = getActivity().getIntent().getExtras();
+//        String movieJson = bundle.getString("movie_json", "");
+//        Movie movie = new Gson().fromJson(movieJson, Movie.class);
+//        TextView title = (TextView) rootview.findViewById(R.id.movie_details_title_textview);
+//        TextView rating = (TextView) rootview.findViewById(R.id.movie_details_rating_textview);
+//        TextView date = (TextView) rootview.findViewById(R.id.movie_details_release_date_textview);
+//        TextView overview = (TextView) rootview.findViewById(R.id.movie_details_overview_textview);
+//        ImageView poster = (ImageView) rootview.findViewById(R.id.movie_details_poster_imageview);
+//        title.setText(movie.title);
+//        rating.setText(movie.vote_average.toString() + "/10");
+//        overview.setText(movie.overview);
+//        date.setText(movie.release_date);
+//        String posterURL = "http://image.tmdb.org/t/p/w185/" + movie.poster_path;
+//        Picasso.with(poster.getContext()).load(posterURL).into(poster);
+//        Log.v("Movie Details: ", movie.title);
+//        trailerRecyclerView = (RecyclerView) rootview.findViewById(R.id.recycler_view);
+//
+//        // use this setting to improve performance if you know that changes
+//        // in content do not change the layout size of the RecyclerView
+//        //trailerRecyclerView.setHasFixedSize(true);
+//
+//        // use a linear layout manager
+//        trailerLayoutManager = new LinearLayoutManager(getContext());
+//        trailerRecyclerView.setLayoutManager(trailerLayoutManager);
+//        getTrailerUrl(movie.id.toString());
+//        trailerDataset = new List<TrailerDetails>() {
+//            @Override
+//            public void add(int location, TrailerDetails object) {
+//
+//            }
+//
+//            @Override
+//            public boolean add(TrailerDetails object) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean addAll(int location, Collection<? extends TrailerDetails> collection) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean addAll(Collection<? extends TrailerDetails> collection) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void clear() {
+//
+//            }
+//
+//            @Override
+//            public boolean contains(Object object) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean containsAll(Collection<?> collection) {
+//                return false;
+//            }
+//
+//            @Override
+//            public TrailerDetails get(int location) {
+//                return null;
+//            }
+//
+//            @Override
+//            public int indexOf(Object object) {
+//                return 0;
+//            }
+//
+//            @Override
+//            public boolean isEmpty() {
+//                return false;
+//            }
+//
+//            @NonNull
+//            @Override
+//            public Iterator<TrailerDetails> iterator() {
+//                return null;
+//            }
+//
+//            @Override
+//            public int lastIndexOf(Object object) {
+//                return 0;
+//            }
+//
+//            @Override
+//            public ListIterator<TrailerDetails> listIterator() {
+//                return null;
+//            }
+//
+//            @NonNull
+//            @Override
+//            public ListIterator<TrailerDetails> listIterator(int location) {
+//                return null;
+//            }
+//
+//            @Override
+//            public TrailerDetails remove(int location) {
+//                return null;
+//            }
+//
+//            @Override
+//            public boolean remove(Object object) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean removeAll(Collection<?> collection) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean retainAll(Collection<?> collection) {
+//                return false;
+//            }
+//
+//            @Override
+//            public TrailerDetails set(int location, TrailerDetails object) {
+//                return null;
+//            }
+//
+//            @Override
+//            public int size() {
+//                return 0;
+//            }
+//
+//            @NonNull
+//            @Override
+//            public List<TrailerDetails> subList(int start, int end) {
+//                return null;
+//            }
+//
+//            @NonNull
+//            @Override
+//            public Object[] toArray() {
+//                return new Object[0];
+//            }
+//
+//            @NonNull
+//            @Override
+//            public <T> T[] toArray(T[] array) {
+//                return null;
+//            }
+//        };
+//        trailerAdapter = new TrailerNReviewAdapter(trailerDataset);
+//        trailerRecyclerView.setAdapter(trailerAdapter);
         setHasOptionsMenu(true);
         return rootview;
 

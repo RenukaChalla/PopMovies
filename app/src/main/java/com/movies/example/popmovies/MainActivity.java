@@ -13,15 +13,23 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    private boolean mTwoPane = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v(getClass().getName(), "onCreate1");
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        Log.v(getClass().getName(), "onCreate");
-        setSupportActionBar(toolbar);
+        if (findViewById(R.id.movie_detail_container) != null) {
+            mTwoPane = true;
+            if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, new MovieDetailsFragment())
+                    .commit();
+            }
+         } else {
+            mTwoPane = false;
 
+        }
     }
 
 }
