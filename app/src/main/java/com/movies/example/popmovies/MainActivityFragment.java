@@ -51,7 +51,7 @@ public class MainActivityFragment extends Fragment {
     private RecyclerView.Adapter movieAdapter;
     private RecyclerView.LayoutManager movieLayoutManager;
     private List<Movie> movieDataset ;
-    private final String LOG_TAG = getClass().getName().toString();
+    private final String LOG_TAG = getClass().getName();
     public MainActivityFragment() {
     }
 
@@ -349,5 +349,7 @@ public class MainActivityFragment extends Fragment {
         }
         return movieArray;
     }
+
+
 }
 

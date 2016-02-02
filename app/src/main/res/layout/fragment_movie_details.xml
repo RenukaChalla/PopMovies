@@ -89,35 +89,11 @@
             android:layout_marginRight="16dp"
             android:text="Trailers:"
             android:textSize="16sp" />
-        <LinearLayout
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:orientation="horizontal">
-                <ImageButton
-                    android:id="@+id/movie_details_trailer_imgbtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="16dp"
-                    android:layout_marginRight="16dp"
-                    android:src="@drawable/ic_info_black_24dp" />
-                <TextView
-                    android:id="@+id/movie_details_trailer_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="Trailer 1" />
-            </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@color/grey" />
-        </LinearLayout>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </ScrollView>
