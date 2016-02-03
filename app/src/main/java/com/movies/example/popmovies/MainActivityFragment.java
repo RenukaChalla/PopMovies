@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -61,6 +62,8 @@ public class MainActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.v(getClass().getName(), "onCreateView");
         View rootview = inflater.inflate(R.layout.fragment_main, container, false);
+        Toolbar toolbar = (Toolbar) rootview.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         movieRecyclerView = (RecyclerView) rootview.findViewById(R.id.my_recycler_view);
 
         // use this setting to improve performance if you know that changes
