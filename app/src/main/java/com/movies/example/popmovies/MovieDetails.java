@@ -11,7 +11,7 @@ public class MovieDetails extends AppCompatActivity {
         setContentView(R.layout.activity_movie_details);
         if(savedInstanceState == null){
             Bundle arguments = new Bundle();
-            arguments.putString(MovieDetailsFragment.DETAIL_MOVIE,getIntent().getStringExtra("movie"));
+            arguments.putString(MovieDetailsFragment.DETAIL_MOVIE_KEY,getIntent().getExtras().getString("movie"));
             MovieDetailsFragment fragment = new MovieDetailsFragment();
             fragment.setArguments(arguments);
 

@@ -218,6 +218,7 @@ public class MainActivityFragment extends Fragment {
                 Movie movie = movieDataset.get(position);
                 String movieJson = new Gson().toJson(movie);
                 MOVIEDETAILS = movieJson;
+                ((Callback)getActivity()).onItemSelected(MOVIEDETAILS);
             }
         });
     }

@@ -4,15 +4,13 @@ package com.movies.example.popmovies;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -27,192 +25,46 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MovieDetailsFragment extends Fragment {
-    private RecyclerView trailerRecyclerView;
-    private RecyclerView.Adapter trailerAdapter;
-    private RecyclerView.LayoutManager trailerLayoutManager;
-    private List<TrailerDetails> trailerDataset;
+
     private final String LOG_TAG = getClass().getName().toString();
-    public static String DETAIL_MOVIE;
+    public static String DETAIL_MOVIE_KEY = "DETAIL_MOVIE";
+    public String DETAIL_MOVIE_VALUE;
+    LinearLayout linearLayout;
 
-    public static MovieDetailsFragment newInstance(String movie) {
-        MovieDetailsFragment mdf = new MovieDetailsFragment();
-        Bundle args = new Bundle();
-        args.putString("movie", movie);
-        mdf.setArguments(args);
-        return  mdf;
-    }
-
-    public String getShownMovie(){
-        return getArguments().getString("movie", "");
-    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Bundle arguments = getArguments();
-        if(arguments == null){
-            DETAIL_MOVIE = arguments.getString("movie","");
+        if(arguments != null){
+            DETAIL_MOVIE_VALUE = arguments.getString(DETAIL_MOVIE_KEY,"");
         }
 
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_movie_details, container, false);
-        //String movieJson = getShownMovie();
-//        Bundle bundle = getActivity().getIntent().getExtras();
-//        String movieJson = bundle.getString("movie_json", "");
-        Movie movie = new Gson().fromJson(DETAIL_MOVIE, Movie.class);
+        linearLayout = (LinearLayout) rootview.findViewById(R.id.trailers_layout);
+        Log.v(LOG_TAG, "In moviedetails fragment");
+        Movie movie = new Gson().fromJson(DETAIL_MOVIE_VALUE, Movie.class);
         TextView title = (TextView) rootview.findViewById(R.id.movie_details_title_textview);
         TextView rating = (TextView) rootview.findViewById(R.id.movie_details_rating_textview);
         TextView date = (TextView) rootview.findViewById(R.id.movie_details_release_date_textview);
         TextView overview = (TextView) rootview.findViewById(R.id.movie_details_overview_textview);
         ImageView poster = (ImageView) rootview.findViewById(R.id.movie_details_poster_imageview);
-        title.setText(movie.title);
-        rating.setText(movie.vote_average.toString() + "/10");
-        overview.setText(movie.overview);
-        date.setText(movie.release_date);
-        String posterURL = "http://image.tmdb.org/t/p/w185/" + movie.poster_path;
-        Picasso.with(poster.getContext()).load(posterURL).into(poster);
-        Log.v("Movie Details: ", movie.title);
-        trailerRecyclerView = (RecyclerView) rootview.findViewById(R.id.recycler_view);
+        if(movie != null){
+            title.setText(movie.title);
+            rating.setText(movie.vote_average.toString() + "/10");
+            overview.setText(movie.overview);
+            date.setText(movie.release_date);
+            String posterURL = "http://image.tmdb.org/t/p/w185/" + movie.poster_path;
+            Picasso.with(poster.getContext()).load(posterURL).into(poster);
+            Log.v("Movie Details: ", movie.title);
+            getTrailerUrl(movie.id.toString());
+        }
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        //trailerRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        trailerLayoutManager = new LinearLayoutManager(getContext());
-        trailerRecyclerView.setLayoutManager(trailerLayoutManager);
-        getTrailerUrl(movie.id.toString());
-        trailerDataset = new List<TrailerDetails>() {
-            @Override
-            public void add(int location, TrailerDetails object) {
-
-            }
-
-            @Override
-            public boolean add(TrailerDetails object) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(int location, Collection<? extends TrailerDetails> collection) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(Collection<? extends TrailerDetails> collection) {
-                return false;
-            }
-
-            @Override
-            public void clear() {
-
-            }
-
-            @Override
-            public boolean contains(Object object) {
-                return false;
-            }
-
-            @Override
-            public boolean containsAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public TrailerDetails get(int location) {
-                return null;
-            }
-
-            @Override
-            public int indexOf(Object object) {
-                return 0;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-
-            @NonNull
-            @Override
-            public Iterator<TrailerDetails> iterator() {
-                return null;
-            }
-
-            @Override
-            public int lastIndexOf(Object object) {
-                return 0;
-            }
-
-            @Override
-            public ListIterator<TrailerDetails> listIterator() {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public ListIterator<TrailerDetails> listIterator(int location) {
-                return null;
-            }
-
-            @Override
-            public TrailerDetails remove(int location) {
-                return null;
-            }
-
-            @Override
-            public boolean remove(Object object) {
-                return false;
-            }
-
-            @Override
-            public boolean removeAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public boolean retainAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public TrailerDetails set(int location, TrailerDetails object) {
-                return null;
-            }
-
-            @Override
-            public int size() {
-                return 0;
-            }
-
-            @NonNull
-            @Override
-            public List<TrailerDetails> subList(int start, int end) {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public Object[] toArray() {
-                return new Object[0];
-            }
-
-            @NonNull
-            @Override
-            public <T> T[] toArray(T[] array) {
-                return null;
-            }
-        };
-        trailerAdapter = new TrailerNReviewAdapter(trailerDataset);
-        trailerRecyclerView.setAdapter(trailerAdapter);
-        getTrailerUrl(movie.id.toString());
         setHasOptionsMenu(true);
         return rootview;
 
@@ -294,14 +146,12 @@ public class MovieDetailsFragment extends Fragment {
         @Override
         protected void onPostExecute(List<TrailerDetails> trailerlist) {
             if (trailerlist != null) {
-                trailerDataset = trailerlist;
-
                 for (TrailerDetails trailer : trailerlist) {
                     if (trailer.key != "") {
                         Log.v(LOG_TAG, " Trailer Path  :" + "https://www.youtube.com/watch?v=" + trailer.key);
                     }
                 }
-                ((TrailerNReviewAdapter) trailerAdapter).updateData(trailerDataset);
+                loadTrailers(trailerlist);
             }
         }
     }
@@ -314,5 +164,14 @@ public class MovieDetailsFragment extends Fragment {
             Log.v(LOG_TAG, " Trailer Path  :" + "https://www.youtube.com/watch?v=" + trailer.key);
         }
         return trailerArray;
+    }
+
+    public void loadTrailers(List<TrailerDetails> trailers){
+        for(TrailerDetails trailer : trailers){
+            View view = getActivity().getLayoutInflater().inflate(R.layout.recycler_view, null);
+            TextView heading = (TextView)view.findViewById(R.id.movie_details_trailer_textview);
+            heading.setText(trailer.name);
+            linearLayout.addView(view);
+        }
     }
 }
