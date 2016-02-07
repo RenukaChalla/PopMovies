@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         Log.v("Clicked on ", "nothing");
         if(mTwoPane){
             Bundle args = new Bundle();
-            args.putString(MainActivityFragment.MOVIEDETAILS, movie);
+            args.putString(MovieDetailsFragment.DETAIL_MOVIE_KEY, movie);
             MovieDetailsFragment fragment = new MovieDetailsFragment();
             fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
