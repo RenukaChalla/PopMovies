@@ -9,6 +9,8 @@ public class MovieDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+//        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_details);
+//        setSupportActionBar(toolbar);
         if(savedInstanceState == null){
             Bundle arguments = new Bundle();
             arguments.putString(MovieDetailsFragment.DETAIL_MOVIE_KEY,getIntent().getExtras().getString("movie"));
