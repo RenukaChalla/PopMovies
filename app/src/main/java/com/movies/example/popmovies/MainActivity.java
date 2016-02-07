@@ -2,18 +2,13 @@ package com.movies.example.popmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback {
 
     private boolean mTwoPane = false;
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,14 +17,31 @@ public class MainActivity extends AppCompatActivity {
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
             if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.movie_detail_container, new MovieDetailsFragment())
-                    .commit();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new MovieDetailsFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
             }
-         } else {
+        } else {
             mTwoPane = false;
 
         }
     }
 
+    @Override
+    public void onItemSelected(String movie) {
+        Log.v("Clicked on ", "nothing");
+        if(mTwoPane){
+            Bundle args = new Bundle();
+            args.putString(MainActivityFragment.MOVIEDETAILS, movie);
+            MovieDetailsFragment fragment = new MovieDetailsFragment();
+            fragment.setArguments(args);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, MovieDetails.class);
+            intent.putExtra("movie", movie );
+            startActivity(intent);
+        }
+    }
 }

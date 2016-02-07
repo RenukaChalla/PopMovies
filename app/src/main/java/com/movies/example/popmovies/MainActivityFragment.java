@@ -4,15 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,9 +24,7 @@ import com.google.gson.Gson;
 import com.movies.example.popmovies.model.response.Movie;
 import com.movies.example.popmovies.model.response.MovieResponse;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileDescriptor;
@@ -37,7 +34,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +49,7 @@ public class MainActivityFragment extends Fragment {
     private RecyclerView.LayoutManager movieLayoutManager;
     private List<Movie> movieDataset ;
     private final String LOG_TAG = getClass().getName();
+    public static String MOVIEDETAILS;
     public MainActivityFragment() {
     }
 
@@ -219,10 +216,8 @@ public class MainActivityFragment extends Fragment {
             public void onItemClick(int position, View v) {
                 Log.i(LOG_TAG, " Clicked on Item " + position);
                 Movie movie = movieDataset.get(position);
-                Intent movieDetailsIntent = new Intent(getActivity(), MovieDetails.class);
                 String movieJson = new Gson().toJson(movie);
-                movieDetailsIntent.putExtra("movie_json", movieJson);
-                startActivity(movieDetailsIntent);
+                MOVIEDETAILS = movieJson;
             }
         });
     }
@@ -352,6 +347,14 @@ public class MainActivityFragment extends Fragment {
         }
         return movieArray;
     }
+
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(String movie);
+    }
+
 
 
 }
