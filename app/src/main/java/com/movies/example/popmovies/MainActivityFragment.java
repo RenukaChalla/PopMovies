@@ -232,7 +232,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings_main) {
                 Intent settingsIntent = new Intent(getActivity(),SettingsActivity.class);
                 startActivity(settingsIntent);
                 return true;
