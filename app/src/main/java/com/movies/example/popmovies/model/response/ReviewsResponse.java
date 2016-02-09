@@ -4,7 +4,7 @@ package com.movies.example.popmovies.model.response;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reviews {
+public class ReviewsResponse {
 
     public Integer id;
     public Integer page;

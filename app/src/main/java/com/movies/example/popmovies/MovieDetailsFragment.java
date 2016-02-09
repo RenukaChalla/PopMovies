@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,9 +17,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.movies.example.popmovies.api.ApiManager;
 import com.movies.example.popmovies.model.response.Movie;
+import com.movies.example.popmovies.model.response.ReviewDetails;
+import com.movies.example.popmovies.model.response.ReviewsResponse;
 import com.movies.example.popmovies.model.response.TrailerDetails;
-import com.movies.example.popmovies.model.response.Trailers;
+import com.movies.example.popmovies.model.response.TrailersResponse;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
@@ -29,10 +31,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -42,128 +46,10 @@ public class MovieDetailsFragment extends Fragment {
     private final String LOG_TAG = getClass().getName().toString();
     public static String DETAIL_MOVIE_KEY = "DETAIL_MOVIE";
     public String DETAIL_MOVIE_VALUE;
-    LinearLayout linearLayout;
-    List<TrailerDetails> trailers = new List<TrailerDetails>() {
-        @Override
-        public void add(int location, TrailerDetails object) {
-
-        }
-
-        @Override
-        public boolean add(TrailerDetails object) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(int location, Collection<? extends TrailerDetails> collection) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(Collection<? extends TrailerDetails> collection) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
-        }
-
-        @Override
-        public boolean contains(Object object) {
-            return false;
-        }
-
-        @Override
-        public boolean containsAll(Collection<?> collection) {
-            return false;
-        }
-
-        @Override
-        public TrailerDetails get(int location) {
-            return null;
-        }
-
-        @Override
-        public int indexOf(Object object) {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @NonNull
-        @Override
-        public Iterator<TrailerDetails> iterator() {
-            return null;
-        }
-
-        @Override
-        public int lastIndexOf(Object object) {
-            return 0;
-        }
-
-        @Override
-        public ListIterator<TrailerDetails> listIterator() {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public ListIterator<TrailerDetails> listIterator(int location) {
-            return null;
-        }
-
-        @Override
-        public TrailerDetails remove(int location) {
-            return null;
-        }
-
-        @Override
-        public boolean remove(Object object) {
-            return false;
-        }
-
-        @Override
-        public boolean removeAll(Collection<?> collection) {
-            return false;
-        }
-
-        @Override
-        public boolean retainAll(Collection<?> collection) {
-            return false;
-        }
-
-        @Override
-        public TrailerDetails set(int location, TrailerDetails object) {
-            return null;
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @NonNull
-        @Override
-        public List<TrailerDetails> subList(int start, int end) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public Object[] toArray() {
-            return new Object[0];
-        }
-
-        @NonNull
-        @Override
-        public <T> T[] toArray(T[] array) {
-            return null;
-        }
-    };
+    private LinearLayout trailersLinearLayout;
+    private LinearLayout reviewsLinearLayout;
+    private List<TrailerDetails> trailers = new ArrayList<TrailerDetails>();
+    private List<ReviewDetails> reviews = new ArrayList<ReviewDetails>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -174,16 +60,23 @@ public class MovieDetailsFragment extends Fragment {
         }
 
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_movie_details, container, false);
-        linearLayout = (LinearLayout) rootview.findViewById(R.id.trailers_layout);
-        View view = getActivity().getLayoutInflater().inflate(R.layout.recycler_view, null);
+        trailersLinearLayout = (LinearLayout) rootview.findViewById(R.id.trailers_layout);
+        reviewsLinearLayout = (LinearLayout) rootview.findViewById(R.id.reviews_layout);
         Log.v(LOG_TAG, "In moviedetails fragment");
         Movie movie = new Gson().fromJson(DETAIL_MOVIE_VALUE, Movie.class);
+        populateUI(rootview, movie);
+        setHasOptionsMenu(true);
+        return rootview;
+
+    }
+
+    private void populateUI(ViewGroup rootview, Movie movie) {
+
         TextView title = (TextView) rootview.findViewById(R.id.movie_details_title_textview);
         TextView rating = (TextView) rootview.findViewById(R.id.movie_details_rating_textview);
         TextView date = (TextView) rootview.findViewById(R.id.movie_details_release_date_textview);
         TextView overview = (TextView) rootview.findViewById(R.id.movie_details_overview_textview);
         ImageView poster = (ImageView) rootview.findViewById(R.id.movie_details_poster_imageview);
-        ImageButton playbtn = (ImageButton) view.findViewById(R.id.movie_details_trailer_imgbtn);
         if (movie != null) {
             title.setText(movie.title);
             rating.setText(movie.vote_average.toString() + "/10");
@@ -192,11 +85,36 @@ public class MovieDetailsFragment extends Fragment {
             String posterURL = "http://image.tmdb.org/t/p/w185/" + movie.poster_path;
             Picasso.with(poster.getContext()).load(posterURL).into(poster);
             Log.v("Movie Details: ", movie.title);
-            getTrailerUrl(movie.id.toString());
+            init(movie.id.toString());
         }
+    }
 
-        setHasOptionsMenu(true);
-        return rootview;
+    private void init(String movieId){
+        String apikey = BuildConfig.THE_MOVIES_DB_API_KEY;
+        ApiManager.getInstance(getActivity()).getTrailers(movieId, apikey, new Callback<TrailersResponse>() {
+            @Override
+            public void success(TrailersResponse trailersResponse, Response response) {
+                List<TrailerDetails> trailerList = trailersResponse.results;
+                loadTrailers(trailerList);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(LOG_TAG, "Trailers Response failed");
+            }
+        });
+        ApiManager.getInstance(getActivity()).getReviews(movieId, apikey, new Callback<ReviewsResponse>() {
+            @Override
+            public void success(ReviewsResponse reviewsResponse, Response response) {
+                List<ReviewDetails> reviewsList = reviewsResponse.results;
+                loadReviews(reviewsList);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(LOG_TAG, "Reviews Response failed");
+            }
+        });
 
     }
 
@@ -288,7 +206,7 @@ public class MovieDetailsFragment extends Fragment {
 
     private List<TrailerDetails> getTrialerDetails(String movieTrailerStr) {
         Gson gson = new Gson();
-        Trailers trailerlist = gson.fromJson(movieTrailerStr, Trailers.class);
+        TrailersResponse trailerlist = gson.fromJson(movieTrailerStr, TrailersResponse.class);
         List<TrailerDetails> trailerArray = trailerlist.results;
         for (TrailerDetails trailer : trailerArray) {
             Log.v(LOG_TAG, " Trailer Path  :" + "https://www.youtube.com/watch?v=" + trailer.key);
@@ -296,8 +214,8 @@ public class MovieDetailsFragment extends Fragment {
         return trailerArray;
     }
 
-    public void loadTrailers(List<TrailerDetails> trailers) {
-        this.trailers = trailers;
+    public void loadTrailers(List<TrailerDetails> trailersList) {
+        this.trailers = trailersList;
         for (TrailerDetails trailer : trailers) {
             View view = getActivity().getLayoutInflater().inflate(R.layout.recycler_view, null);
             TextView heading = (TextView) view.findViewById(R.id.movie_details_trailer_textview);
@@ -317,7 +235,19 @@ public class MovieDetailsFragment extends Fragment {
 
                 }
             });
-            linearLayout.addView(view);
+            trailersLinearLayout.addView(view);
+        }
+    }
+
+    public void loadReviews(List<ReviewDetails> reviewsList) {
+        this.reviews = reviewsList;
+        for (ReviewDetails review : reviews) {
+            View view = getActivity().getLayoutInflater().inflate(R.layout.reviews_view, null);
+            TextView author = (TextView) view.findViewById(R.id.movie_details_reviews_author_textview);
+            author.setText(review.author);
+            TextView content = (TextView) view.findViewById(R.id.movie_details_reviews_content_textview);
+            content.setText(review.content);
+            reviewsLinearLayout.addView(view);
         }
     }
 }

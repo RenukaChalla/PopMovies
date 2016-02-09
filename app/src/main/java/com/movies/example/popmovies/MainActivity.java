@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         }
     }
 
+
     @Override
     public void onItemSelected(String movie) {
         Log.v("Clicked on ", "nothing");

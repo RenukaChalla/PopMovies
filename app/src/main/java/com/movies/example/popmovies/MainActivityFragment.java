@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
+import com.movies.example.popmovies.api.ApiManager;
 import com.movies.example.popmovies.model.response.Movie;
 import com.movies.example.popmovies.model.response.MovieResponse;
 
@@ -32,10 +32,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
+
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -43,11 +44,12 @@ import java.util.ListIterator;
 public class MainActivityFragment extends Fragment {
 
     private RecyclerView movieRecyclerView;
-    private RecyclerView.Adapter movieAdapter;
+    private MovieGridAdapter movieAdapter;
     private RecyclerView.LayoutManager movieLayoutManager;
-    private List<Movie> movieDataset ;
+    private List<Movie> movieDataset;
     private final String LOG_TAG = getClass().getName();
     public static String MOVIEDETAILS;
+
     public MainActivityFragment() {
     }
 
@@ -66,135 +68,54 @@ public class MainActivityFragment extends Fragment {
         // use a linear layout manager
         movieLayoutManager = new GridLayoutManager(getContext(), 2);
         movieRecyclerView.setLayoutManager(movieLayoutManager);
-        movieDataset = new List<Movie>() {
-            @Override
-            public void add(int location, Movie object) {
-
-            }
-
-            @Override
-            public boolean add(Movie object) {
-                return true;
-            }
-
-            @Override
-            public boolean addAll(int location, Collection<? extends Movie> collection) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(Collection<? extends Movie> collection) {
-                return false;
-            }
-
-            @Override
-            public void clear() {
-
-            }
-
-            @Override
-            public boolean contains(Object object) {
-                return false;
-            }
-
-            @Override
-            public boolean containsAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public Movie get(int location) {
-                return null;
-            }
-
-            @Override
-            public int indexOf(Object object) {
-                return 0;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-
-            @NonNull
-            @Override
-            public Iterator<Movie> iterator() {
-                return null;
-            }
-
-            @Override
-            public int lastIndexOf(Object object) {
-                return 0;
-            }
-
-            @Override
-            public ListIterator<Movie> listIterator() {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public ListIterator<Movie> listIterator(int location) {
-                return null;
-            }
-
-            @Override
-            public Movie remove(int location) {
-                return null;
-            }
-
-            @Override
-            public boolean remove(Object object) {
-                return false;
-            }
-
-            @Override
-            public boolean removeAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public boolean retainAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public Movie set(int location, Movie object) {
-                return null;
-            }
-
-            @Override
-            public int size() {
-                return 0;
-            }
-
-            @NonNull
-            @Override
-            public List<Movie> subList(int start, int end) {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public Object[] toArray() {
-                return new Object[0];
-            }
-
-            @NonNull
-            @Override
-            public <T> T[] toArray(T[] array) {
-                return null;
-            }
-        };
+        movieDataset = new ArrayList<Movie>();
         movieAdapter = new MovieGridAdapter(movieDataset);
         movieRecyclerView.setAdapter(movieAdapter);
 
 
-        updateMoviesList();
+        init();
         setHasOptionsMenu(true);
         return rootview;
     }
+
+    private void init() {
+        String apikey = BuildConfig.THE_MOVIES_DB_API_KEY;
+        String sortby = updateMoviesList();
+        String sortbyparam;
+        if (sortby.equalsIgnoreCase("popularity")) {
+            sortbyparam = "popularity.desc";
+            ApiManager.getInstance(getActivity()).getMoviesByPopularity(sortbyparam, apikey, new retrofit.Callback<MovieResponse>() {
+                @Override
+                public void success(MovieResponse movieResponse, Response response) {
+                    movieDataset = movieResponse.results;
+                    movieAdapter.updateData(movieDataset);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.e(LOG_TAG, "Movie Response failed");
+                }
+            });
+        }else {
+            sortbyparam = "vote_average.desc";
+            ApiManager.getInstance(getActivity()).getMoviesByHighestRating(sortbyparam, apikey, new retrofit.Callback<MovieResponse>() {
+                @Override
+                public void success(MovieResponse movieResponse, Response response) {
+                    movieDataset = movieResponse.results;
+                    movieAdapter.updateData(movieDataset);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.e(LOG_TAG, "Movie Response failed");
+                }
+            });
+        }
+
+
+
+    }
+
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_main, menu);
@@ -214,34 +135,37 @@ public class MainActivityFragment extends Fragment {
                 Movie movie = movieDataset.get(position);
                 String movieJson = new Gson().toJson(movie);
                 MOVIEDETAILS = movieJson;
-                ((Callback)getActivity()).onItemSelected(MOVIEDETAILS);
+                ((Callback) getActivity()).onItemSelected(MOVIEDETAILS);
             }
         });
     }
 
-    public void updateMoviesList() {
+    public String updateMoviesList() {
         SharedPreferences sharedPrefs =
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortby = sharedPrefs.getString(
                 getString(R.string.pref_key_sort_by),
                 getString(R.string.pref_popularity_sort_by));
-        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-        fetchMoviesTask.execute(sortby);
+        return sortby;
+//        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
+//        fetchMoviesTask.execute(sortby);
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings_main) {
-                Intent settingsIntent = new Intent(getActivity(),SettingsActivity.class);
-                startActivity(settingsIntent);
-                return true;
+            Intent settingsIntent = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
         }
         if (id == R.id.action_favorite) {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
     private class FetchMoviesTask extends AsyncTask<String, Void, List<Movie>> {
 
 
@@ -260,15 +184,15 @@ public class MainActivityFragment extends Fragment {
             String apikey = BuildConfig.THE_MOVIES_DB_API_KEY;
 
             try {
-                String MOVIES_BASE_URL ;
+                String MOVIES_BASE_URL;
 //                        "http://api.themoviedb.org/3/discover/movie?" +
 //                        "sort_by=popularity.desc&api_key=apikey";
                 String sortbyparam;
                 final String SORT_BY = "sort_by";
-                if(sortBy.equalsIgnoreCase("popularity")){
+                if (sortBy.equalsIgnoreCase("popularity")) {
                     MOVIES_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
                     sortbyparam = "popularity.desc";
-                } else{
+                } else {
                     MOVIES_BASE_URL = "http://api.themoviedb.org/3/discover/movie?certification_country=US&certification=R";
                     sortbyparam = "vote_average.desc";
                 }
@@ -318,14 +242,15 @@ public class MainActivityFragment extends Fragment {
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(List<Movie> movieList) {
             if (movieList != null) {
                 movieDataset = movieList;
 
-                for ( Movie movie : movieList) {
-                    if(movie.poster_path !="") {
-                        Log.v(LOG_TAG," Poster Path  :" +"http://image.tmdb.org/t/p/w185/"+movie.poster_path);
+                for (Movie movie : movieList) {
+                    if (movie.poster_path != "") {
+                        Log.v(LOG_TAG, " Poster Path  :" + "http://image.tmdb.org/t/p/w185/" + movie.poster_path);
                     }
                     //movieDataset.add(movie);
                 }
@@ -333,14 +258,15 @@ public class MainActivityFragment extends Fragment {
             }
         }
     }
+
     private List<Movie> getMovieDataFromJSON(String moviesJSONStr)
             throws JSONException {
 
         Gson gson = new Gson();
         MovieResponse moviesList = gson.fromJson(moviesJSONStr, MovieResponse.class);
         List<Movie> movieArray = moviesList.results;
-        for(Movie movie : movieArray){
-            Log.v(LOG_TAG," Poster Path  :" +"http://image.tmdb.org/t/p/w185/"+movie.poster_path);
+        for (Movie movie : movieArray) {
+            Log.v(LOG_TAG, " Poster Path  :" + "http://image.tmdb.org/t/p/w185/" + movie.poster_path);
         }
         return movieArray;
     }
@@ -351,7 +277,6 @@ public class MainActivityFragment extends Fragment {
          */
         public void onItemSelected(String movie);
     }
-
 
 
 }
