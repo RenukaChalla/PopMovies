@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 /**
  * Created by Renuka Challa on 09/02/16.
@@ -36,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
     @Override
     public void onItemSelected(String movie) {
-        Log.v("Clicked on ", "nothing");
         if (mTwoPane) {
             Bundle args = new Bundle();
             args.putString(MovieDetailsFragment.DETAIL_MOVIE_KEY, movie);
