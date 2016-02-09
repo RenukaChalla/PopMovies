@@ -24,11 +24,11 @@ public interface IPopMoviesApi {
                                Callback<MovieResponse> callback);
 
     @GET("/movie/{movieId}/videos")
-    void getTrailers(@Path("ID") String movieId, @Query("api_key") String APPID_PARAMS,
+    void getTrailers(@Path("movieId") String movieId, @Query("api_key") String APPID_PARAMS,
                                   Callback<TrailersResponse> callback);
 
     @GET("/movie/{movieId}/reviews")
-    void getReviews(@Path("ID") String movieId, @Query("api_key") String APPID_PARAMS,
+    void getReviews(@Path("movieId") String movieId, @Query("api_key") String APPID_PARAMS,
                      Callback<ReviewsResponse> callback);
 
 }

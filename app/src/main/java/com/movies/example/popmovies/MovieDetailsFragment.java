@@ -39,10 +39,12 @@ public class MovieDetailsFragment extends Fragment {
     private final String LOG_TAG = getClass().getName().toString();
     public static String DETAIL_MOVIE_KEY = "DETAIL_MOVIE";
     public String DETAIL_MOVIE_VALUE;
+    private LinearLayout trailersLabelLinearLayout;
     private LinearLayout trailersLinearLayout;
     private LinearLayout reviewsLinearLayout;
     private List<TrailerDetails> trailers = new ArrayList<TrailerDetails>();
     private List<ReviewDetails> reviews = new ArrayList<ReviewDetails>();
+    ViewGroup rootview;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,6 +56,7 @@ public class MovieDetailsFragment extends Fragment {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_movie_details, container, false);
         trailersLinearLayout = (LinearLayout) rootview.findViewById(R.id.trailers_layout);
         reviewsLinearLayout = (LinearLayout) rootview.findViewById(R.id.reviews_layout);
+        trailersLabelLinearLayout = (LinearLayout) rootview.findViewById(R.id.trailers_label_layout);
         Log.v(LOG_TAG, "In moviedetails fragment");
         Movie movie = new Gson().fromJson(DETAIL_MOVIE_VALUE, Movie.class);
         populateUI(rootview, movie);
@@ -109,8 +112,14 @@ public class MovieDetailsFragment extends Fragment {
 
     public void loadTrailers(List<TrailerDetails> trailersList) {
         this.trailers = trailersList;
+        if (trailers.size() > 0) {
+            View view = getActivity().getLayoutInflater().inflate(R.layout.trailers_label_view, null);
+            TextView trailerLabel = (TextView) view.findViewById(R.id.movie_details_trailers_textview);
+            trailerLabel.setText("Trailers: ");
+            trailersLabelLinearLayout.addView(view);
+        }
         for (TrailerDetails trailer : trailers) {
-            View view = getActivity().getLayoutInflater().inflate(R.layout.recycler_view, null);
+            View view = getActivity().getLayoutInflater().inflate(R.layout.trailer_view, null);
             TextView heading = (TextView) view.findViewById(R.id.movie_details_trailer_textview);
             heading.setText(trailer.name);
             final TrailerDetails trail = trailer;
@@ -136,7 +145,7 @@ public class MovieDetailsFragment extends Fragment {
         for (ReviewDetails review : reviews) {
             View view = getActivity().getLayoutInflater().inflate(R.layout.reviews_view, null);
             TextView author = (TextView) view.findViewById(R.id.movie_details_reviews_author_textview);
-            author.setText(review.author);
+            author.setText("Review by " + review.author);
             TextView content = (TextView) view.findViewById(R.id.movie_details_reviews_content_textview);
             content.setText(review.content);
             reviewsLinearLayout.addView(view);
