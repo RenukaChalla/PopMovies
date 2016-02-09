@@ -62,37 +62,27 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void init() {
+        retrofit.Callback<MovieResponse> callback = new retrofit.Callback<MovieResponse>() {
+            @Override
+            public void success(MovieResponse movieResponse, Response response) {
+                movieDataset = movieResponse.results;
+                movieAdapter.updateData(movieDataset);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(LOG_TAG, "Movie Response failed");
+            }
+        };
         String apikey = BuildConfig.THE_MOVIES_DB_API_KEY;
         String sortby = updateMoviesList();
         String sortbyparam;
         if (sortby.equalsIgnoreCase("popularity")) {
             sortbyparam = "popularity.desc";
-            ApiManager.getInstance(getActivity()).getMoviesByPopularity(sortbyparam, apikey, new retrofit.Callback<MovieResponse>() {
-                @Override
-                public void success(MovieResponse movieResponse, Response response) {
-                    movieDataset = movieResponse.results;
-                    movieAdapter.updateData(movieDataset);
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    Log.e(LOG_TAG, "Movie Response failed");
-                }
-            });
+            ApiManager.getInstance(getActivity()).getMoviesByPopularity(sortbyparam, apikey, callback);
         } else {
             sortbyparam = "vote_average.desc";
-            ApiManager.getInstance(getActivity()).getMoviesByHighestRating(sortbyparam, apikey, new retrofit.Callback<MovieResponse>() {
-                @Override
-                public void success(MovieResponse movieResponse, Response response) {
-                    movieDataset = movieResponse.results;
-                    movieAdapter.updateData(movieDataset);
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    Log.e(LOG_TAG, "Movie Response failed");
-                }
-            });
+            ApiManager.getInstance(getActivity()).getMoviesByHighestRating(sortbyparam, apikey, callback);
         }
     }
 
