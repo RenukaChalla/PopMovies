@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+/**
+ * Created by Renuka Challa on 09/02/16.
+ */
 public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback {
 
     private boolean mTwoPane = false;
@@ -15,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     @Override
     public void onItemSelected(String movie) {
         Log.v("Clicked on ", "nothing");
-        if(mTwoPane){
+        if (mTwoPane) {
             Bundle args = new Bundle();
             args.putString(MovieDetailsFragment.DETAIL_MOVIE_KEY, movie);
             MovieDetailsFragment fragment = new MovieDetailsFragment();
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
                     .commit();
         } else {
             Intent intent = new Intent(this, MovieDetails.class);
-            intent.putExtra("movie", movie );
+            intent.putExtra("movie", movie);
             startActivity(intent);
         }
     }

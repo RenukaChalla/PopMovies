@@ -5,7 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Created by Renuka Challa on 09/02/16.
+ */
 public class MovieResponse {
 
     public Integer page;

@@ -3,7 +3,6 @@ package com.movies.example.popmovies;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -25,12 +24,6 @@ import com.movies.example.popmovies.model.response.TrailerDetails;
 import com.movies.example.popmovies.model.response.TrailersResponse;
 import com.squareup.picasso.Picasso;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +32,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Created by Renuka Challa on 09/02/16.
  */
 public class MovieDetailsFragment extends Fragment {
 
@@ -58,7 +51,6 @@ public class MovieDetailsFragment extends Fragment {
         if (arguments != null) {
             DETAIL_MOVIE_VALUE = arguments.getString(DETAIL_MOVIE_KEY, "");
         }
-
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_movie_details, container, false);
         trailersLinearLayout = (LinearLayout) rootview.findViewById(R.id.trailers_layout);
         reviewsLinearLayout = (LinearLayout) rootview.findViewById(R.id.reviews_layout);
@@ -67,11 +59,9 @@ public class MovieDetailsFragment extends Fragment {
         populateUI(rootview, movie);
         setHasOptionsMenu(true);
         return rootview;
-
     }
 
     private void populateUI(ViewGroup rootview, Movie movie) {
-
         TextView title = (TextView) rootview.findViewById(R.id.movie_details_title_textview);
         TextView rating = (TextView) rootview.findViewById(R.id.movie_details_rating_textview);
         TextView date = (TextView) rootview.findViewById(R.id.movie_details_release_date_textview);
@@ -89,7 +79,7 @@ public class MovieDetailsFragment extends Fragment {
         }
     }
 
-    private void init(String movieId){
+    private void init(String movieId) {
         String apikey = BuildConfig.THE_MOVIES_DB_API_KEY;
         ApiManager.getInstance(getActivity()).getTrailers(movieId, apikey, new Callback<TrailersResponse>() {
             @Override
@@ -115,103 +105,6 @@ public class MovieDetailsFragment extends Fragment {
                 Log.e(LOG_TAG, "Reviews Response failed");
             }
         });
-
-    }
-
-    private void openSelectedTrailer(String movieId) {
-        getTrailerUrl(movieId);
-    }
-
-    private void getTrailerUrl(String movieId) {
-        FetchTrailerTask fetchTrailerTask = new FetchTrailerTask();
-        fetchTrailerTask.execute(movieId);
-    }
-
-    private class FetchTrailerTask extends AsyncTask<String, Void, List<TrailerDetails>> {
-
-
-        private final String LOG_TAG = FetchTrailerTask.class.getSimpleName();
-
-        @Override
-        protected List<TrailerDetails> doInBackground(String... params) {
-
-            if (params.length == 0) {
-                return null;
-            }
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            String result = null;
-            String movieId = params[0];
-            String apikey = BuildConfig.THE_MOVIES_DB_API_KEY;
-
-            try {
-                String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie/" + movieId + "/" + "videos";
-                final String APPID_PARAMS = "api_key";
-                Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
-                        .appendQueryParameter(APPID_PARAMS, apikey)
-                        .build();
-
-
-                URL url = new URL(builtUri.toString());
-                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    result = null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-                if (buffer.length() == 0) {
-                    result = null;
-                }
-                result = buffer.toString();
-                Log.v(LOG_TAG, "Trailers JSON String: " + result);
-                return getTrialerDetails(result);
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "IO Error ", e);
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
-            }
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(List<TrailerDetails> trailerlist) {
-            if (trailerlist != null) {
-                for (TrailerDetails trailer : trailerlist) {
-                    if (trailer.key != "") {
-                        Log.v(LOG_TAG, " Trailer Path  :" + "https://www.youtube.com/watch?v=" + trailer.key);
-                    }
-                }
-                loadTrailers(trailerlist);
-            }
-        }
-    }
-
-    private List<TrailerDetails> getTrialerDetails(String movieTrailerStr) {
-        Gson gson = new Gson();
-        TrailersResponse trailerlist = gson.fromJson(movieTrailerStr, TrailersResponse.class);
-        List<TrailerDetails> trailerArray = trailerlist.results;
-        for (TrailerDetails trailer : trailerArray) {
-            Log.v(LOG_TAG, " Trailer Path  :" + "https://www.youtube.com/watch?v=" + trailer.key);
-        }
-        return trailerArray;
     }
 
     public void loadTrailers(List<TrailerDetails> trailersList) {
@@ -227,12 +120,11 @@ public class MovieDetailsFragment extends Fragment {
                     Log.i(LOG_TAG, "OnPlayButtonClick");
                     String url = "https://www.youtube.com/watch?v=" + trail.key;
                     Log.v(LOG_TAG, url);
-                    try{
+                    try {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                    } catch (Exception e){
-                        Toast.makeText(getContext(),"Cannot play video. No supported application.", Toast.LENGTH_LONG);
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "Cannot play video. No supported application.", Toast.LENGTH_LONG);
                     }
-
                 }
             });
             trailersLinearLayout.addView(view);

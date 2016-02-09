@@ -14,7 +14,7 @@ import com.movies.example.popmovies.utils.SystemUtils;
 import retrofit.Callback;
 
 /**
- * Created by admin on 09/02/16.
+ * Created by Renuka Challa on 09/02/16.
  */
 public class ApiManager {
 

@@ -10,7 +10,7 @@ import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
 /**
- * Created by admin on 09/02/16.
+ * Created by Renuka Challa on 09/02/16.
  */
 public class ApiClientService {
 
@@ -30,7 +30,7 @@ public class ApiClientService {
         return client;
     }
 
-    public static void setBaseUrl(String url){
+    public static void setBaseUrl(String url) {
         PROD = url;
     }
 

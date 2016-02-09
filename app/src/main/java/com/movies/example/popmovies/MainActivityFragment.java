@@ -2,8 +2,6 @@ package com.movies.example.popmovies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -22,16 +20,8 @@ import com.movies.example.popmovies.api.ApiManager;
 import com.movies.example.popmovies.model.response.Movie;
 import com.movies.example.popmovies.model.response.MovieResponse;
 
-import org.json.JSONException;
-
-import java.io.BufferedReader;
 import java.io.FileDescriptor;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +29,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Created by Renuka Challa on 09/02/16.
  */
 public class MainActivityFragment extends Fragment {
 
@@ -60,19 +50,12 @@ public class MainActivityFragment extends Fragment {
         Log.v(getClass().getName(), "onCreateView");
         View rootview = inflater.inflate(R.layout.fragment_main, container, false);
         movieRecyclerView = (RecyclerView) rootview.findViewById(R.id.my_recycler_view);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
         movieRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
         movieLayoutManager = new GridLayoutManager(getContext(), 2);
         movieRecyclerView.setLayoutManager(movieLayoutManager);
         movieDataset = new ArrayList<Movie>();
         movieAdapter = new MovieGridAdapter(movieDataset);
         movieRecyclerView.setAdapter(movieAdapter);
-
-
         init();
         setHasOptionsMenu(true);
         return rootview;
@@ -96,7 +79,7 @@ public class MainActivityFragment extends Fragment {
                     Log.e(LOG_TAG, "Movie Response failed");
                 }
             });
-        }else {
+        } else {
             sortbyparam = "vote_average.desc";
             ApiManager.getInstance(getActivity()).getMoviesByHighestRating(sortbyparam, apikey, new retrofit.Callback<MovieResponse>() {
                 @Override
@@ -111,13 +94,9 @@ public class MainActivityFragment extends Fragment {
                 }
             });
         }
-
-
-
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_main, menu);
     }
 
@@ -128,7 +107,7 @@ public class MainActivityFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-        ((MovieGridAdapter) movieAdapter).setOnItemClickListener(new MovieGridAdapter.ItemClickListener() {
+        (movieAdapter).setOnItemClickListener(new MovieGridAdapter.ItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Log.i(LOG_TAG, " Clicked on Item " + position);
@@ -147,9 +126,6 @@ public class MainActivityFragment extends Fragment {
                 getString(R.string.pref_key_sort_by),
                 getString(R.string.pref_popularity_sort_by));
         return sortby;
-//        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-//        fetchMoviesTask.execute(sortby);
-
     }
 
     @Override
@@ -166,118 +142,11 @@ public class MainActivityFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private class FetchMoviesTask extends AsyncTask<String, Void, List<Movie>> {
-
-
-        private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
-
-        @Override
-        protected List<Movie> doInBackground(String... params) {
-
-            if (params.length == 0) {
-                return null;
-            }
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            String moviesJSONStr = null;
-            String sortBy = params[0];
-            String apikey = BuildConfig.THE_MOVIES_DB_API_KEY;
-
-            try {
-                String MOVIES_BASE_URL;
-//                        "http://api.themoviedb.org/3/discover/movie?" +
-//                        "sort_by=popularity.desc&api_key=apikey";
-                String sortbyparam;
-                final String SORT_BY = "sort_by";
-                if (sortBy.equalsIgnoreCase("popularity")) {
-                    MOVIES_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
-                    sortbyparam = "popularity.desc";
-                } else {
-                    MOVIES_BASE_URL = "http://api.themoviedb.org/3/discover/movie?certification_country=US&certification=R";
-                    sortbyparam = "vote_average.desc";
-                }
-                final String APPID_PARAMS = "api_key";
-                Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
-                        .appendQueryParameter(SORT_BY, sortbyparam)
-                        .appendQueryParameter(APPID_PARAMS, apikey)
-                        .build();
-
-
-                URL url = new URL(builtUri.toString());
-                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    moviesJSONStr = null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-                if (buffer.length() == 0) {
-                    moviesJSONStr = null;
-                }
-                moviesJSONStr = buffer.toString();
-                Log.v(LOG_TAG, "Movies JSON String: " + moviesJSONStr);
-                return getMovieDataFromJSON(moviesJSONStr);
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "IO Error ", e);
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, "JSON Error " + moviesJSONStr, e);
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Movie> movieList) {
-            if (movieList != null) {
-                movieDataset = movieList;
-
-                for (Movie movie : movieList) {
-                    if (movie.poster_path != "") {
-                        Log.v(LOG_TAG, " Poster Path  :" + "http://image.tmdb.org/t/p/w185/" + movie.poster_path);
-                    }
-                    //movieDataset.add(movie);
-                }
-                ((MovieGridAdapter) movieAdapter).updateData(movieDataset);
-            }
-        }
-    }
-
-    private List<Movie> getMovieDataFromJSON(String moviesJSONStr)
-            throws JSONException {
-
-        Gson gson = new Gson();
-        MovieResponse moviesList = gson.fromJson(moviesJSONStr, MovieResponse.class);
-        List<Movie> movieArray = moviesList.results;
-        for (Movie movie : movieArray) {
-            Log.v(LOG_TAG, " Poster Path  :" + "http://image.tmdb.org/t/p/w185/" + movie.poster_path);
-        }
-        return movieArray;
-    }
-
     public interface Callback {
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
         public void onItemSelected(String movie);
     }
-
-
 }
 

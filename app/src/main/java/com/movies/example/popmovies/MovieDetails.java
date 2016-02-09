@@ -2,7 +2,9 @@ package com.movies.example.popmovies;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
+/**
+ * Created by Renuka Challa on 09/02/16.
+ */
 public class MovieDetails extends AppCompatActivity {
 
     @Override

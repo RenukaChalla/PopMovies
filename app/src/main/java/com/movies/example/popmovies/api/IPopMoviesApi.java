@@ -10,7 +10,7 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
- * Created by admin on 09/02/16.
+ * Created by Renuka Challa on 09/02/16.
  */
 public interface IPopMoviesApi {
     @GET("/discover/movie?")

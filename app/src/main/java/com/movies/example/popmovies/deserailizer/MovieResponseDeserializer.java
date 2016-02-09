@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by admin on 09/02/16.
+ * Created by Renuka Challa on 09/02/16.
  */
 public class MovieResponseDeserializer implements JsonDeserializer<MovieResponse> {
 

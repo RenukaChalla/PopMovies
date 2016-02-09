@@ -1,6 +1,8 @@
 
 package com.movies.example.popmovies.model.response;
-
+/**
+ * Created by Renuka Challa on 09/02/16.
+ */
 public class TrailerDetails {
 
     public String id;

@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
- * Created by admin on 09/02/16.
+ * Created by Renuka Challa on 09/02/16.
  */
 public class SystemUtils {
     public static boolean isNetworkConnected(Context context) {

@@ -1,7 +1,7 @@
 package com.movies.example.popmovies.enums;
 
 /**
- * Created by admin on 9/17/15.
+ * Created by Renuka Challa on 9/17/15.
  */
 public enum NetworkMode {
     ONLINE ("online"),
