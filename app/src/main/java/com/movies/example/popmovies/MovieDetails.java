@@ -2,6 +2,8 @@ package com.movies.example.popmovies;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
 /**
  * Created by Renuka Challa on 09/02/16.
  */
@@ -11,8 +13,9 @@ public class MovieDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-//        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_details);
-//        setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if(savedInstanceState == null){
             Bundle arguments = new Bundle();
             arguments.putString(MovieDetailsFragment.DETAIL_MOVIE_KEY,getIntent().getExtras().getString("movie"));
