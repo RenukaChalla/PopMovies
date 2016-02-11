@@ -24,7 +24,7 @@
 
     <string-array name="pref_sort_by_list_titles">
         <item>popularity</item>
-        <item>highest_rated</item>
+        <item>highest rated</item>
     </string-array>
     <string-array name="pref_sort_by_list_values">
         <item>popularity</item>
@@ -52,7 +52,7 @@
         <item>360</item>
         <item>-1</item>
     </string-array>
-
+    <string name="share" translatable="false">Share</string>
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Example settings for Notifications -->

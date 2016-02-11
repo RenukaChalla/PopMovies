@@ -2,7 +2,8 @@
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars= "vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:scrollbars="vertical"
     android:useDefaultMargins="false"
     android:alignmentMode="alignBounds"
     android:columnOrderPreserved="false">
@@ -13,6 +14,8 @@
         android:scaleType="centerCrop"
         android:text="New movie"
         android:id="@+id/posterImgView"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp"
         android:background="@drawable/highlight_selected_item"
         android:minHeight="310dp"/>
 

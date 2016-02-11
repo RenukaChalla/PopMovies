@@ -88,6 +88,7 @@ public class MainActivityFragment extends Fragment {
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
+
     }
 
     @Override
