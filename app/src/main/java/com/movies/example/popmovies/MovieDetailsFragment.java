@@ -29,8 +29,6 @@ import com.movies.example.popmovies.model.response.TrailerDetails;
 import com.movies.example.popmovies.model.response.TrailersResponse;
 import com.squareup.picasso.Picasso;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +49,7 @@ public class MovieDetailsFragment extends Fragment {
     private LinearLayout reviewsLinearLayout;
     private List<TrailerDetails> trailers = new ArrayList<TrailerDetails>();
     private List<ReviewDetails> reviews = new ArrayList<ReviewDetails>();
-    private URL shareURL;
+    private String shareURL = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -125,11 +123,7 @@ public class MovieDetailsFragment extends Fragment {
             trailerLabel.setText("Trailers: ");
             trailersLabelLinearLayout.addView(view);
             String url = "https://www.youtube.com/watch?v=" + trailers.get(0).key;
-            try {
-                shareURL = new URL(url);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            shareURL = url;
             setHasOptionsMenu(true);
         }
         for (TrailerDetails trailer : trailers) {
@@ -194,6 +188,7 @@ public class MovieDetailsFragment extends Fragment {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "SHARE TRAILER : ");
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareURL);
         return shareIntent;
     }

@@ -14,8 +14,8 @@
         android:scaleType="centerCrop"
         android:text="New movie"
         android:id="@+id/posterImgView"
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
         android:background="@drawable/highlight_selected_item"
         android:minHeight="310dp"/>
 
