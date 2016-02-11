@@ -94,8 +94,6 @@ public class MovieContentProvider extends ContentProvider {
 
         String id;
         String selectionCriteria;
-
-        // this makes delete all rows return the number of rows deleted
         if (selection == null) selection = "1";
 
         switch(match) {
@@ -119,9 +117,6 @@ public class MovieContentProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
-        final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        int insertCount = 0;
         return super.bulkInsert(uri, values);
     }
 }
