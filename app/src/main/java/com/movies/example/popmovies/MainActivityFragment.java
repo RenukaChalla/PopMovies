@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -21,12 +20,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.movies.example.popmovies.api.ApiManager;
 import com.movies.example.popmovies.db.MovieContract;
 import com.movies.example.popmovies.model.response.Movie;
 import com.movies.example.popmovies.model.response.MovieResponse;
+import com.movies.example.popmovies.utils.FavDbUtils;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -42,6 +43,7 @@ import retrofit.client.Response;
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerView movieRecyclerView;
+    private GridView gridView;
     private MovieGridAdapter movieAdapter;
     private FavouriteAdapter favouriteAdapter;
     private RecyclerView.LayoutManager movieLayoutManager;
@@ -60,15 +62,50 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         Log.v(getClass().getName(), "onCreateView");
         View rootview = inflater.inflate(R.layout.fragment_main, container, false);
         movieRecyclerView = (RecyclerView) rootview.findViewById(R.id.my_recycler_view);
+        gridView = (GridView) rootview.findViewById(R.id.fav_gridview);
         movieRecyclerView.setHasFixedSize(true);
         movieLayoutManager = new GridLayoutManager(getContext(), 2);
         movieRecyclerView.setLayoutManager(movieLayoutManager);
         movieDataset = new ArrayList<Movie>();
-        movieAdapter = new MovieGridAdapter(movieDataset);
+        movieAdapter = new MovieGridAdapter(getActivity(), movieDataset);
         movieRecyclerView.setAdapter(movieAdapter);
         init();
         setHasOptionsMenu(true);
         return rootview;
+    }
+
+    public void onResume() {
+        super.onResume();
+       showFavourites();
+        (movieAdapter).setOnItemClickListener(new MovieGridAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Log.i(LOG_TAG, " Clicked on Item " + position);
+                Movie movie = movieDataset.get(position);
+                String movieJson = new Gson().toJson(movie);
+                MOVIEDETAILS = movieJson;
+                ((Callback) getActivity()).onItemSelected(MOVIEDETAILS);
+            }
+        });
+    }
+
+    private void showFavourites() {
+        if (isfav) {
+            Cursor cursor = FavDbUtils.getFavFromdb(getActivity());
+            favouriteAdapter = new FavouriteAdapter(getActivity(), cursor, 0);
+            gridView.setVisibility(View.VISIBLE);
+            movieRecyclerView.setVisibility(View.GONE);
+            gridView.setNumColumns(2);
+            gridView.setAdapter(favouriteAdapter);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Movie movie = (Movie)((parent.getAdapter()).getItem(position));
+                    ((Callback) getActivity()).onItemSelected(new Gson().toJson(movie));
+                }
+            });
+
+        }
     }
 
     private void init() {
@@ -106,34 +143,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         super.dump(prefix, fd, writer, args);
     }
 
-    public void onResume() {
-        super.onResume();
-        if (isfav == true) {
-            favouriteAdapter = new FavouriteAdapter(getActivity(), null, 0);
-            View rootview = getActivity().getLayoutInflater().inflate(R.layout.fragment_main, null, false);
-            GridView gridView = (GridView) rootview.findViewById(R.id.my_recycler_view);
-            gridView.setAdapter(favouriteAdapter);
-            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Uri detailUri = MovieContract.MovieTable.buildMovieUri(id);
-                    ((Callback) getActivity()).onItemSelected(detailUri.toString());
-                }
-            });
-
-        }
-        (movieAdapter).setOnItemClickListener(new MovieGridAdapter.ItemClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Log.i(LOG_TAG, " Clicked on Item " + position);
-                Movie movie = movieDataset.get(position);
-                String movieJson = new Gson().toJson(movie);
-                MOVIEDETAILS = movieJson;
-                ((Callback) getActivity()).onItemSelected(MOVIEDETAILS);
-            }
-        });
-    }
-
     public String updateMoviesList() {
         SharedPreferences sharedPrefs =
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -154,7 +163,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         }
         if (id == R.id.action_favorite) {
             isfav = true;
-            onResume();
+            showFavourites();
+            Toast.makeText(getActivity(), "show favourites", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

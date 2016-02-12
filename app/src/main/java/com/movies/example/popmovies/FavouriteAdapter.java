@@ -33,7 +33,7 @@ public class FavouriteAdapter extends CursorAdapter {
         ImageView posterImg = (ImageView) view.findViewById(R.id.posterImgView);
         String posterPath = cursor.getString(cursor.getColumnIndex(
                 MovieContract.MovieTable.DB_POSTER_PATH));
-        Picasso.with(mContext).load(posterPath).into(posterImg);
-
+        String posterURL = "http://image.tmdb.org/t/p/w185/" + posterPath;
+        Picasso.with(mContext).load(posterURL).into(posterImg);
     }
 }

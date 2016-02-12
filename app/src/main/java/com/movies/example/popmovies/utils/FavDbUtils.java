@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.movies.example.popmovies.db.MovieContract;
 import com.movies.example.popmovies.model.response.Movie;
@@ -27,9 +26,12 @@ public class FavDbUtils {
         cMovie.close();
         return b;
     }
-    public static void insertFavMovieIntoDb(Context context, Bundle b) {
-        Log.v("UTils: ", b.toString());
-        ContentValues cv = Movie.buildMovieContentValues(b);
+    public static void insertFavMovieIntoDb(Context context, Movie movie) {
+        ContentValues cv = Movie.buildMovieContentValues(movie);
         context.getContentResolver().insert(MovieContract.MovieTable.CONTENT_URI,cv);
+    }
+
+    public static Cursor getFavFromdb(Context context) {
+        return context.getContentResolver().query(MovieContract.MovieTable.CONTENT_URI, null, null, null, null);
     }
 }

@@ -71,25 +71,27 @@ public class MovieDetailsFragment extends Fragment {
         return rootview;
     }
 
+    private Movie selectedMovie;
+
     private void populateUI() {
         //TODO:check if it is fav url or json string
-        Movie movie = new Gson().fromJson(DETAIL_MOVIE_VALUE, Movie.class);
+        selectedMovie = new Gson().fromJson(DETAIL_MOVIE_VALUE, Movie.class);
         TextView title = (TextView) rootview.findViewById(R.id.movie_details_title_textview);
         TextView rating = (TextView) rootview.findViewById(R.id.movie_details_rating_textview);
         TextView date = (TextView) rootview.findViewById(R.id.movie_details_release_date_textview);
         TextView overview = (TextView) rootview.findViewById(R.id.movie_details_overview_textview);
         ImageView poster = (ImageView) rootview.findViewById(R.id.movie_details_poster_imageview);
 
-        if (movie != null) {
-            title.setText(movie.title);
-            rating.setText(movie.vote_average.toString() + "/10");
-            overview.setText(movie.overview);
-            date.setText(movie.release_date);
-            String posterURL = "http://image.tmdb.org/t/p/w185/" + movie.poster_path;
+        if (selectedMovie != null) {
+            title.setText(selectedMovie.title);
+            rating.setText(selectedMovie.vote_average.toString() + "/10");
+            overview.setText(selectedMovie.overview);
+            date.setText(selectedMovie.release_date);
+            String posterURL = "http://image.tmdb.org/t/p/w185/" + selectedMovie.poster_path;
             Picasso.with(poster.getContext()).load(posterURL).into(poster);
-            onFavButtonClick(movie.id.toString());
-            Log.v("Movie Details: ", movie.title);
-            init(movie.id.toString());
+            onFavButtonClick();
+            Log.v("Movie Details: ", selectedMovie.title);
+            init(selectedMovie.id.toString());
         }
     }
 
@@ -121,14 +123,13 @@ public class MovieDetailsFragment extends Fragment {
         });
     }
 
-    private void onFavButtonClick(String movieId){
+    private void onFavButtonClick(){
         Button favbtn = (Button) rootview.findViewById(R.id.favorite_button);
-        final Bundle mBundle = getArguments();
-        if (mBundle != null &&  movieId != null) {
+        if (selectedMovie != null) {
             favbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FavDbUtils.insertFavMovieIntoDb(getActivity(), mBundle);
+                    FavDbUtils.insertFavMovieIntoDb(getActivity(), selectedMovie);
                 }
             });
         }

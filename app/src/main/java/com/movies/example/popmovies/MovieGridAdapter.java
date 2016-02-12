@@ -1,5 +1,6 @@
 package com.movies.example.popmovies;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     private List<Movie> movieAdapterDataset;
 
     private static ItemClickListener itemClickListener;
+    private Context mContext;
 
     public static class ViewHolder extends RecyclerView.ViewHolder
             implements View
@@ -46,7 +48,8 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
         this.itemClickListener = itemClickListener;
     }
 
-    public MovieGridAdapter(List<Movie> movieDataset) {
+    public MovieGridAdapter(Context context, List<Movie> movieDataset) {
+        this.mContext = context;
         if (movieDataset != null) {
             movieAdapterDataset = movieDataset;
         }
@@ -66,9 +69,9 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
         if (movieAdapterDataset.get(position) != null) {
             String posterURL = "http://image.tmdb.org/t/p/w185/" + movieAdapterDataset.get(position).poster_path;
             Log.v("In adapter", posterURL);
-            Picasso.with(holder.picassoimg.getContext()).load(posterURL).into(holder.picassoimg);
+            Picasso.with(mContext).load(posterURL).into(holder.picassoimg);
         } else
-            Picasso.with(holder.picassoimg.getContext()).load("http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg").into(holder.picassoimg);
+            Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg").into(holder.picassoimg);
     }
 
     @Override

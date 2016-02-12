@@ -80,16 +80,16 @@ public class Movie {
         return bundle;
     }
 
-    public static ContentValues buildMovieContentValues(Bundle b) {
+    public static ContentValues buildMovieContentValues(Movie movie) {
 
         ContentValues cv = new ContentValues();
 
-        cv.put(MovieContract.MovieTable.DB_MOVIE_ID, b.getInt("id", 0));
-        cv.put(MovieContract.MovieTable.DB_TITLE, b.getString("title"));
-        cv.put(MovieContract.MovieTable.DB_POSTER_PATH, b.getString("poster_path"));
-        cv.put(MovieContract.MovieTable.DB_RELEASE_DATE, b.getString("release_date"));
-        cv.put(MovieContract.MovieTable.DB_USER_RATING, b.getString("vote_average"));
-        cv.put(MovieContract.MovieTable.DB_OVERVIEW, b.getString("overview"));
+        cv.put(MovieContract.MovieTable.DB_MOVIE_ID, movie.id);
+        cv.put(MovieContract.MovieTable.DB_TITLE, movie.title);
+        cv.put(MovieContract.MovieTable.DB_POSTER_PATH, movie.poster_path);
+        cv.put(MovieContract.MovieTable.DB_RELEASE_DATE, movie.release_date);
+        cv.put(MovieContract.MovieTable.DB_USER_RATING, movie.vote_average);
+        cv.put(MovieContract.MovieTable.DB_OVERVIEW, movie.overview);
 
         return cv;
     }
