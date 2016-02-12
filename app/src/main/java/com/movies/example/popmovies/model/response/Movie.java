@@ -61,11 +61,6 @@ public class Movie {
         return original_title;
     }
 
-    //    @Override
-//    public int compareTo(Object another) {
-//        int compareMovieId=(((Movie) another).id);
-//        return (this.id) - compareMovieId;
-//    }
     public static Bundle buildDetailBundle(Cursor c) {
 
         c.moveToFirst();
@@ -78,6 +73,19 @@ public class Movie {
         bundle.putString("overview", c.getString(6));
 
         return bundle;
+    }
+
+    public static Movie buildDetailObject(Cursor c) {
+
+        c.moveToFirst();
+        Bundle bundle = new Bundle();
+        Movie movie = new Movie(c.getInt(1),
+                c.getString(2),
+                c.getString(6),
+                c.getString(3),
+                c.getString(4),
+                c.getDouble(5));
+        return movie;
     }
 
     public static ContentValues buildMovieContentValues(Movie movie) {

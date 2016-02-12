@@ -76,17 +76,20 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     public void onResume() {
         super.onResume();
-       showFavourites();
-        (movieAdapter).setOnItemClickListener(new MovieGridAdapter.ItemClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Log.i(LOG_TAG, " Clicked on Item " + position);
-                Movie movie = movieDataset.get(position);
-                String movieJson = new Gson().toJson(movie);
-                MOVIEDETAILS = movieJson;
-                ((Callback) getActivity()).onItemSelected(MOVIEDETAILS);
-            }
-        });
+        if (isfav) {
+            showFavourites();
+        } else {
+            (movieAdapter).setOnItemClickListener(new MovieGridAdapter.ItemClickListener() {
+                @Override
+                public void onItemClick(int position, View v) {
+                    Log.i(LOG_TAG, " Clicked on Item " + position);
+                    Movie movie = movieDataset.get(position);
+                    String movieJson = new Gson().toJson(movie);
+                    MOVIEDETAILS = movieJson;
+                    ((Callback) getActivity()).onItemSelected(MOVIEDETAILS);
+                }
+            });
+        }
     }
 
     private void showFavourites() {
@@ -100,7 +103,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Movie movie = (Movie)((parent.getAdapter()).getItem(position));
+                    Movie movie = Movie.buildDetailObject(
+                            (Cursor) ((FavouriteAdapter) parent.getAdapter()).getItem(position));
                     ((Callback) getActivity()).onItemSelected(new Gson().toJson(movie));
                 }
             });

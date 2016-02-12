@@ -2,6 +2,7 @@ package com.movies.example.popmovies;
 
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -89,9 +90,22 @@ public class MovieDetailsFragment extends Fragment {
             date.setText(selectedMovie.release_date);
             String posterURL = "http://image.tmdb.org/t/p/w185/" + selectedMovie.poster_path;
             Picasso.with(poster.getContext()).load(posterURL).into(poster);
+            isFavourite();
             onFavButtonClick();
             Log.v("Movie Details: ", selectedMovie.title);
             init(selectedMovie.id.toString());
+        }
+    }
+
+    private void isFavourite() {
+        Button favbtn = (Button) rootview.findViewById(R.id.favorite_button);
+        Cursor cursor = FavDbUtils.checkIfInFav(getActivity(), selectedMovie.id);
+        if (cursor.getCount() == 0) {
+            favbtn.setText("Mark as \n favorite");
+            favbtn.setAllCaps(true);
+        } else if(cursor.getCount() == 1){
+            favbtn.setText("Remove from \n favorites");
+            favbtn.setAllCaps(true);
         }
     }
 
@@ -123,13 +137,24 @@ public class MovieDetailsFragment extends Fragment {
         });
     }
 
-    private void onFavButtonClick(){
-        Button favbtn = (Button) rootview.findViewById(R.id.favorite_button);
+    private void onFavButtonClick() {
+        final Button favbtn = (Button) rootview.findViewById(R.id.favorite_button);
         if (selectedMovie != null) {
             favbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FavDbUtils.insertFavMovieIntoDb(getActivity(), selectedMovie);
+                    Cursor cursor = FavDbUtils.checkIfInFav(getActivity(), selectedMovie.id);
+                    if (cursor.getCount() == 0) {
+                        FavDbUtils.insertFavMovieIntoDb(getActivity(), selectedMovie);
+                        favbtn.setText("Remove from \n favorites");
+                        favbtn.setAllCaps(true);
+                    } else {
+                        if ((cursor != null) && (cursor.getCount() == 1)) {
+                            FavDbUtils.deleteFavMovieFromDb(getActivity(), selectedMovie.id);
+                            favbtn.setText("Mark as \n favorite");
+                            favbtn.setAllCaps(true);
+                        }
+                    }
                 }
             });
         }
@@ -186,7 +211,7 @@ public class MovieDetailsFragment extends Fragment {
         MenuItem item = menu.findItem(R.id.action_share);
         ShareActionProvider mShareActionProvider =
                 (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-        if (mShareActionProvider != null ) {
+        if (mShareActionProvider != null) {
             mShareActionProvider.setShareIntent(callShareIntent());
         } else {
             Log.d(LOG_TAG, "Share Action Provider is null");

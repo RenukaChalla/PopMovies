@@ -31,7 +31,18 @@ public class FavDbUtils {
         context.getContentResolver().insert(MovieContract.MovieTable.CONTENT_URI,cv);
     }
 
+    public static void deleteFavMovieFromDb(Context context, Integer tmdbId) {
+        String selectionMovie = MovieContract.MovieTable.DB_MOVIE_ID + "=" + tmdbId;
+        context.getContentResolver().delete(MovieContract.MovieTable.CONTENT_URI,
+                selectionMovie, null);
+    }
+
     public static Cursor getFavFromdb(Context context) {
         return context.getContentResolver().query(MovieContract.MovieTable.CONTENT_URI, null, null, null, null);
+    }
+
+    public static Cursor checkIfInFav(Context context, Integer tmdbId) {
+        String selectionMovie = MovieContract.MovieTable.DB_MOVIE_ID + "=" + tmdbId;
+        return context.getContentResolver().query(MovieContract.MovieTable.CONTENT_URI, null, selectionMovie,null,null);
     }
 }

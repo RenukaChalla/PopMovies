@@ -34,10 +34,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
 
     @Override
-    public void onItemSelected(String movie) {
+    public void onItemSelected(String movieJson) {
         if (mTwoPane) {
             Bundle args = new Bundle();
-            args.putString(MovieDetailsFragment.DETAIL_MOVIE_KEY, movie);
+            args.putString(MovieDetailsFragment.DETAIL_MOVIE_KEY, movieJson);
             MovieDetailsFragment fragment = new MovieDetailsFragment();
             fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
                     .commit();
         } else {
             Intent intent = new Intent(this, MovieDetails.class);
-            intent.putExtra("movie", movie);
+            intent.putExtra("movie", movieJson);
             startActivity(intent);
         }
     }
