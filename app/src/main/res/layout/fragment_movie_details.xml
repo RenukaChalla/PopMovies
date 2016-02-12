@@ -52,7 +52,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="start"
                         android:paddingTop="0dp"
-                        android:text="95-94-2015"
+                        android:text="15-4-2015"
                         android:textSize="20sp" />
 
                     <TextView
@@ -78,7 +78,9 @@
                         android:background="@color/buttonbackgroundcolor"
                         android:text="Mark as \n favourite"
                         android:textAllCaps="true"
-                        android:textSize="7dp" />
+                        android:textSize="7dp"
+                        android:clickable="true"
+                        android:onClick="onFavButtonClick"/>
                 </LinearLayout>
             </LinearLayout>
 

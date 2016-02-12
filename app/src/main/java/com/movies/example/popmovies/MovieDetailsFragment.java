@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,6 +28,7 @@ import com.movies.example.popmovies.model.response.ReviewDetails;
 import com.movies.example.popmovies.model.response.ReviewsResponse;
 import com.movies.example.popmovies.model.response.TrailerDetails;
 import com.movies.example.popmovies.model.response.TrailersResponse;
+import com.movies.example.popmovies.utils.FavDbUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ import retrofit.client.Response;
 public class MovieDetailsFragment extends Fragment {
 
     private final String LOG_TAG = getClass().getName().toString();
+    ViewGroup rootview;
     public static String DETAIL_MOVIE_KEY = "DETAIL_MOVIE";
     public String DETAIL_MOVIE_VALUE;
     private LinearLayout trailersLabelLinearLayout;
@@ -58,23 +61,25 @@ public class MovieDetailsFragment extends Fragment {
         if (arguments != null) {
             DETAIL_MOVIE_VALUE = arguments.getString(DETAIL_MOVIE_KEY, "");
         }
-        ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_movie_details, container, false);
+        rootview = (ViewGroup) inflater.inflate(R.layout.fragment_movie_details, container, false);
         trailersLinearLayout = (LinearLayout) rootview.findViewById(R.id.trailers_layout);
         reviewsLinearLayout = (LinearLayout) rootview.findViewById(R.id.reviews_layout);
         trailersLabelLinearLayout = (LinearLayout) rootview.findViewById(R.id.trailers_label_layout);
-        Log.v(LOG_TAG, "In moviedetails fragment");
-        Movie movie = new Gson().fromJson(DETAIL_MOVIE_VALUE, Movie.class);
-        populateUI(rootview, movie);
+        Log.v(LOG_TAG, "In moviedetails fragment" + DETAIL_MOVIE_VALUE);
+        populateUI();
         setHasOptionsMenu(false);
         return rootview;
     }
 
-    private void populateUI(ViewGroup rootview, Movie movie) {
+    private void populateUI() {
+        //TODO:check if it is fav url or json string
+        Movie movie = new Gson().fromJson(DETAIL_MOVIE_VALUE, Movie.class);
         TextView title = (TextView) rootview.findViewById(R.id.movie_details_title_textview);
         TextView rating = (TextView) rootview.findViewById(R.id.movie_details_rating_textview);
         TextView date = (TextView) rootview.findViewById(R.id.movie_details_release_date_textview);
         TextView overview = (TextView) rootview.findViewById(R.id.movie_details_overview_textview);
         ImageView poster = (ImageView) rootview.findViewById(R.id.movie_details_poster_imageview);
+
         if (movie != null) {
             title.setText(movie.title);
             rating.setText(movie.vote_average.toString() + "/10");
@@ -82,6 +87,7 @@ public class MovieDetailsFragment extends Fragment {
             date.setText(movie.release_date);
             String posterURL = "http://image.tmdb.org/t/p/w185/" + movie.poster_path;
             Picasso.with(poster.getContext()).load(posterURL).into(poster);
+            onFavButtonClick(movie.id.toString());
             Log.v("Movie Details: ", movie.title);
             init(movie.id.toString());
         }
@@ -113,6 +119,19 @@ public class MovieDetailsFragment extends Fragment {
                 Log.e(LOG_TAG, "Reviews Response failed");
             }
         });
+    }
+
+    private void onFavButtonClick(String movieId){
+        Button favbtn = (Button) rootview.findViewById(R.id.favorite_button);
+        final Bundle mBundle = getArguments();
+        if (mBundle != null &&  movieId != null) {
+            favbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FavDbUtils.insertFavMovieIntoDb(getActivity(), mBundle);
+                }
+            });
+        }
     }
 
     public void loadTrailers(List<TrailerDetails> trailersList) {

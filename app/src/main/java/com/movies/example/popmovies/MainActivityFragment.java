@@ -1,7 +1,12 @@
 package com.movies.example.popmovies;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -14,9 +19,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 
 import com.google.gson.Gson;
 import com.movies.example.popmovies.api.ApiManager;
+import com.movies.example.popmovies.db.MovieContract;
 import com.movies.example.popmovies.model.response.Movie;
 import com.movies.example.popmovies.model.response.MovieResponse;
 
@@ -31,14 +39,16 @@ import retrofit.client.Response;
 /**
  * Created by Renuka Challa on 09/02/16.
  */
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerView movieRecyclerView;
     private MovieGridAdapter movieAdapter;
+    private FavouriteAdapter favouriteAdapter;
     private RecyclerView.LayoutManager movieLayoutManager;
     private List<Movie> movieDataset;
     private final String LOG_TAG = getClass().getName();
     public static String MOVIEDETAILS;
+    private boolean isfav = false;
 
     public MainActivityFragment() {
     }
@@ -98,6 +108,20 @@ public class MainActivityFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
+        if (isfav == true) {
+            favouriteAdapter = new FavouriteAdapter(getActivity(), null, 0);
+            View rootview = getActivity().getLayoutInflater().inflate(R.layout.fragment_main, null, false);
+            GridView gridView = (GridView) rootview.findViewById(R.id.my_recycler_view);
+            gridView.setAdapter(favouriteAdapter);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Uri detailUri = MovieContract.MovieTable.buildMovieUri(id);
+                    ((Callback) getActivity()).onItemSelected(detailUri.toString());
+                }
+            });
+
+        }
         (movieAdapter).setOnItemClickListener(new MovieGridAdapter.ItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
@@ -123,14 +147,34 @@ public class MainActivityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings_main) {
+            isfav = false;
             Intent settingsIntent = new Intent(getActivity(), SettingsActivity.class);
             startActivity(settingsIntent);
             return true;
         }
         if (id == R.id.action_favorite) {
+            isfav = true;
+            onResume();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(),
+                MovieContract.MovieTable.CONTENT_URI,
+                null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        favouriteAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        favouriteAdapter.swapCursor(null);
     }
 
     public interface Callback {
