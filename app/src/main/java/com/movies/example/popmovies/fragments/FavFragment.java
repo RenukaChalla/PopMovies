@@ -58,7 +58,7 @@ public class FavFragment extends Fragment implements LoaderManager.LoaderCallbac
     private void showFavourites() {
             Cursor cursor = FavDbUtils.getFavFromdb(getActivity());
             favouriteAdapter = new FavouriteAdapter(getActivity(), cursor, 0);
-            gridView.setNumColumns(3);
+            gridView.setNumColumns(2);
             gridView.setAdapter(favouriteAdapter);
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
