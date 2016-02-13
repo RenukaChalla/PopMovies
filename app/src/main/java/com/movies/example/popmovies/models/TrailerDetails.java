@@ -1,5 +1,5 @@
 
-package com.movies.example.popmovies.model.response;
+package com.movies.example.popmovies.models;
 /**
  * Created by Renuka Challa on 09/02/16.
  */

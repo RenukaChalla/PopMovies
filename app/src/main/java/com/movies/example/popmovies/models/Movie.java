@@ -1,5 +1,5 @@
 
-package com.movies.example.popmovies.model.response;
+package com.movies.example.popmovies.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -77,7 +77,7 @@ public class Movie {
 
     public static Movie buildDetailObject(Cursor c) {
 
-        c.moveToFirst();
+        //c.moveToFirst();
         Bundle bundle = new Bundle();
         Movie movie = new Movie(c.getInt(1),
                 c.getString(2),

@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.movies.example.popmovies.db.MovieContract;
-import com.movies.example.popmovies.model.response.Movie;
+import com.movies.example.popmovies.models.Movie;
 
 /**
  * Created by admin on 11/02/16.

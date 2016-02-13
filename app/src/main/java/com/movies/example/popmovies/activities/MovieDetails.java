@@ -1,8 +1,11 @@
-package com.movies.example.popmovies;
+package com.movies.example.popmovies.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.movies.example.popmovies.R;
+import com.movies.example.popmovies.fragments.MovieDetailsFragment;
 
 /**
  * Created by Renuka Challa on 09/02/16.

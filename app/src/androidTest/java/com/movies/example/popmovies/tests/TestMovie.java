@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.test.AndroidTestCase;
 
 import com.movies.example.popmovies.db.MovieContract;
-import com.movies.example.popmovies.model.response.Movie;
+import com.movies.example.popmovies.models.Movie;
 
 public class TestMovie extends AndroidTestCase {
 

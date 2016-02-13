@@ -15,10 +15,8 @@
         android:title="@string/app_name" />
 
     <fragment
-        android:id="@+id/fragment_mainactivity"
-        android:name="com.movies.example.popmovies.MainActivityFragment"
+        android:id="@+id/container_mainactivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.movies.example.popmovies.MainActivityFragment"
-        tools:layout="@android:layout/list_content" />
+        android:name="com.movies.example.popmovies.fragments.MainActivityFragment"/>
 </LinearLayout>

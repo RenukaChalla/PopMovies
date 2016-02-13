@@ -1,4 +1,4 @@
-package com.movies.example.popmovies;
+package com.movies.example.popmovies.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

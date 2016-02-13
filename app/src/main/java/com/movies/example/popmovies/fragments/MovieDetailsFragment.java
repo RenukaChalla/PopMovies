@@ -1,4 +1,4 @@
-package com.movies.example.popmovies;
+package com.movies.example.popmovies.fragments;
 
 
 import android.content.Intent;
@@ -23,11 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.movies.example.popmovies.BuildConfig;
+import com.movies.example.popmovies.R;
 import com.movies.example.popmovies.api.ApiManager;
-import com.movies.example.popmovies.model.response.Movie;
-import com.movies.example.popmovies.model.response.ReviewDetails;
+import com.movies.example.popmovies.models.Movie;
+import com.movies.example.popmovies.models.ReviewDetails;
 import com.movies.example.popmovies.model.response.ReviewsResponse;
-import com.movies.example.popmovies.model.response.TrailerDetails;
+import com.movies.example.popmovies.models.TrailerDetails;
 import com.movies.example.popmovies.model.response.TrailersResponse;
 import com.movies.example.popmovies.utils.FavDbUtils;
 import com.squareup.picasso.Picasso;

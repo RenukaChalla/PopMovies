@@ -1,4 +1,4 @@
-package com.movies.example.popmovies;
+package com.movies.example.popmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 
-import com.movies.example.popmovies.model.response.Movie;
+import com.movies.example.popmovies.R;
+import com.movies.example.popmovies.models.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.movies.example.popmovies;
+package com.movies.example.popmovies.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 
+import com.movies.example.popmovies.R;
 import com.movies.example.popmovies.db.MovieContract;
 import com.squareup.picasso.Picasso;
 

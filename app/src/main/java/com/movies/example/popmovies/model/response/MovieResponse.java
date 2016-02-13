@@ -2,6 +2,7 @@
 package com.movies.example.popmovies.model.response;
 
 import com.google.gson.annotations.SerializedName;
+import com.movies.example.popmovies.models.Movie;
 
 import java.util.ArrayList;
 import java.util.List;

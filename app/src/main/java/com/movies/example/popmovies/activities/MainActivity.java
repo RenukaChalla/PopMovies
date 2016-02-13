@@ -1,24 +1,37 @@
-package com.movies.example.popmovies;
+package com.movies.example.popmovies.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.movies.example.popmovies.R;
+import com.movies.example.popmovies.fragments.FavFragment;
+import com.movies.example.popmovies.fragments.MainActivityFragment;
+import com.movies.example.popmovies.fragments.MovieDetailsFragment;
+
 /**
  * Created by Renuka Challa on 09/02/16.
  */
-public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback {
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback,
+        MainActivityFragment.FavCallback, FavFragment.Callback {
 
     private boolean mTwoPane = false;
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        onRetainCustomNonConfigurationInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (findViewById(R.id.container_mainactivity) != null) {
+            MainActivityFragment fragment = new MainActivityFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container_mainactivity, fragment)
+                    .commit();
+        }
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
             if (savedInstanceState == null) {
@@ -32,6 +45,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         }
     }
 
+    public void onFavSelected() {
+            FavFragment fragment = new FavFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container_mainactivity, fragment)
+                    .commit();
+            getSupportFragmentManager().executePendingTransactions();
+
+    }
 
     @Override
     public void onItemSelected(String movieJson) {
