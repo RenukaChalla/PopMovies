@@ -47,7 +47,6 @@ public class FavFragment extends Fragment implements LoaderManager.LoaderCallbac
         View rootview = inflater.inflate(R.layout.fragment_fav, container, false);
         gridView = (GridView) rootview.findViewById(R.id.fav_gridview);
         showFavourites();
-        //setHasOptionsMenu(true);
         return rootview;
     }
 
@@ -55,11 +54,6 @@ public class FavFragment extends Fragment implements LoaderManager.LoaderCallbac
         super.onResume();
         showFavourites();
     }
-
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu_main, menu);
-//
-//    }
 
     private void showFavourites() {
             Cursor cursor = FavDbUtils.getFavFromdb(getActivity());
@@ -80,22 +74,6 @@ public class FavFragment extends Fragment implements LoaderManager.LoaderCallbac
     public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
         super.dump(prefix, fd, writer, args);
     }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.action_settings_main) {
-//            Intent settingsIntent = new Intent(getActivity(), SettingsActivity.class);
-//            startActivity(settingsIntent);
-//            return true;
-//        }
-//        if (id == R.id.action_favorite) {
-//            ((FavCallback) getActivity()).onFavSelected();
-//            Toast.makeText(getActivity(), "Your Favourites!", Toast.LENGTH_SHORT).show();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -120,7 +98,4 @@ public class FavFragment extends Fragment implements LoaderManager.LoaderCallbac
          */
         public void onItemSelected(String movie);
     }
-//    public interface FavCallback {
-//        public void onFavSelected();
-//    }
 }
