@@ -9,6 +9,7 @@ import com.movies.example.popmovies.R;
 import com.movies.example.popmovies.fragments.FavFragment;
 import com.movies.example.popmovies.fragments.MainActivityFragment;
 import com.movies.example.popmovies.fragments.MovieDetailsFragment;
+import com.movies.example.popmovies.utils.SystemUtils;
 
 /**
  * Created by Renuka Challa on 09/02/16.
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
     private boolean mTwoPane = false;
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private static final String FAVFRAGMENT_TAG = "FAV";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +28,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if (findViewById(R.id.container_mainactivity) != null) {
-            MainActivityFragment fragment = new MainActivityFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container_mainactivity, fragment)
-                    .commit();
+        if (SystemUtils.isNetworkConnected(this)) {
+            if (findViewById(R.id.container_mainactivity) != null) {
+                MainActivityFragment fragment = new MainActivityFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container_mainactivity, fragment)
+                        .commit();
+            }
+        } else{
+            onFavSelected();
         }
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
@@ -46,11 +52,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     }
 
     public void onFavSelected() {
-            FavFragment fragment = new FavFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container_mainactivity, fragment)
-                    .commit();
-            getSupportFragmentManager().executePendingTransactions();
+        FavFragment fragment = new FavFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container_mainactivity, fragment, FAVFRAGMENT_TAG)
+                .commit();
+        getSupportFragmentManager().executePendingTransactions();
 
     }
 

@@ -105,7 +105,7 @@ public class MovieDetailsFragment extends Fragment {
         if (cursor.getCount() == 0) {
             favbtn.setText("Mark as \n favorite");
             favbtn.setAllCaps(true);
-        } else if(cursor.getCount() == 1){
+        } else if (cursor.getCount() == 1) {
             favbtn.setText("Remove from \n favorites");
             favbtn.setAllCaps(true);
         }
@@ -163,48 +163,62 @@ public class MovieDetailsFragment extends Fragment {
     }
 
     public void loadTrailers(List<TrailerDetails> trailersList) {
-        this.trailers = trailersList;
-        if (trailers.size() > 0) {
-            View view = getActivity().getLayoutInflater().inflate(R.layout.trailers_label_view, null);
-            TextView trailerLabel = (TextView) view.findViewById(R.id.movie_details_trailers_textview);
-            trailerLabel.setText("Trailers: ");
-            trailersLabelLinearLayout.addView(view);
-            String url = "https://www.youtube.com/watch?v=" + trailers.get(0).key;
-            shareURL = url;
-            setHasOptionsMenu(true);
-        }
-        for (TrailerDetails trailer : trailers) {
-            View view = getActivity().getLayoutInflater().inflate(R.layout.trailer_view, null);
-            TextView heading = (TextView) view.findViewById(R.id.movie_details_trailer_textview);
-            heading.setText(trailer.name);
-            final TrailerDetails trail = trailer;
-            ImageButton playbtn = (ImageButton) view.findViewById(R.id.movie_details_trailer_imgbtn);
-            playbtn.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Log.i(LOG_TAG, "OnPlayButtonClick");
-                    String url = "https://www.youtube.com/watch?v=" + trail.key;
-                    Log.v(LOG_TAG, url);
-                    try {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), "Cannot play video. No supported application.", Toast.LENGTH_LONG);
-                    }
+        try {
+            if (trailersList.size() > 0 && trailersList != null) {
+                this.trailers = trailersList;
+                if (trailers.size() > 0) {
+                    View view = getActivity().getLayoutInflater().inflate(R.layout.trailers_label_view, null);
+                    TextView trailerLabel = (TextView) view.findViewById(R.id.movie_details_trailers_textview);
+                    trailerLabel.setText("Trailers: ");
+                    trailersLabelLinearLayout.addView(view);
+                    String url = "https://www.youtube.com/watch?v=" + trailers.get(0).key;
+                    shareURL = url;
+                    setHasOptionsMenu(true);
                 }
-            });
-            trailersLinearLayout.addView(view);
+                for (TrailerDetails trailer : trailers) {
+                    View view = getActivity().getLayoutInflater().inflate(R.layout.trailer_view, null);
+                    TextView heading = (TextView) view.findViewById(R.id.movie_details_trailer_textview);
+                    heading.setText(trailer.name);
+                    final TrailerDetails trail = trailer;
+                    ImageButton playbtn = (ImageButton) view.findViewById(R.id.movie_details_trailer_imgbtn);
+                    playbtn.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            Log.i(LOG_TAG, "OnPlayButtonClick");
+                            String url = "https://www.youtube.com/watch?v=" + trail.key;
+                            Log.v(LOG_TAG, url);
+                            try {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                            } catch (Exception e) {
+                                Toast.makeText(getContext(), "Cannot play video. No supported application.", Toast.LENGTH_LONG);
+                            }
+                        }
+                    });
+                    trailersLinearLayout.addView(view);
+                }
+            }
+        } catch (NullPointerException e){
+            Log.e(LOG_TAG, e.getMessage() );
+            getRetainInstance();
         }
 
     }
 
     public void loadReviews(List<ReviewDetails> reviewsList) {
-        this.reviews = reviewsList;
-        for (ReviewDetails review : reviews) {
-            View view = getActivity().getLayoutInflater().inflate(R.layout.reviews_view, null);
-            TextView author = (TextView) view.findViewById(R.id.movie_details_reviews_author_textview);
-            author.setText("Review by " + review.author);
-            TextView content = (TextView) view.findViewById(R.id.movie_details_reviews_content_textview);
-            content.setText(review.content);
-            reviewsLinearLayout.addView(view);
+        try {
+            if (reviewsList != null && reviewsList.size() > 0) {
+                this.reviews = reviewsList;
+                for (ReviewDetails review : reviews) {
+                    View view = getActivity().getLayoutInflater().inflate(R.layout.reviews_view, null);
+                    TextView author = (TextView) view.findViewById(R.id.movie_details_reviews_author_textview);
+                    author.setText("Review by " + review.author);
+                    TextView content = (TextView) view.findViewById(R.id.movie_details_reviews_content_textview);
+                    content.setText(review.content);
+                    reviewsLinearLayout.addView(view);
+                }
+            }
+        } catch (NullPointerException e){
+            Log.e(LOG_TAG, e.getMessage());
+            getRetainInstance();
         }
     }
 

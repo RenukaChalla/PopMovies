@@ -63,6 +63,8 @@ public class FavFragment extends Fragment implements LoaderManager.LoaderCallbac
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    gridView.setBackgroundColor(getResources().getColor(R.color.black));
+                    view.setActivated(true);
                     Log.v(LOG_TAG, "Clicked on position : " + position);
                     Movie movie = Movie.buildDetailObject(
                             (Cursor) ((FavouriteAdapter) parent.getAdapter()).getItem(position));

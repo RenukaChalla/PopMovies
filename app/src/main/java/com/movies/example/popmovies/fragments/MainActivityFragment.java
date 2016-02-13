@@ -71,6 +71,8 @@ public class MainActivityFragment extends Fragment {
         (movieAdapter).setOnItemClickListener(new MovieGridAdapter.ItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
+                movieRecyclerView.setBackgroundColor(getResources().getColor(R.color.black));
+                v.setActivated(true);
                 Log.i(LOG_TAG, " Clicked on Item " + position);
                 Movie movie = movieDataset.get(position);
                 String movieJson = new Gson().toJson(movie);
