@@ -1,5 +1,6 @@
 package com.movies.example.popmovies.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -45,6 +46,18 @@ public class MainActivityFragment extends Fragment {
     private final String LOG_TAG = getClass().getName();
     public static String MOVIEDETAILS;
 
+    private ProgressDialog progress;
+
+    private void showProgress() {
+        progress = ProgressDialog.show(getActivity(), "Please wait", "Connecting to server...", true);
+    }
+
+    private void hideProgress() {
+        if(progress != null && progress.isShowing()) {
+            progress.dismiss();
+        }
+    }
+
     public MainActivityFragment() {
     }
 
@@ -83,15 +96,18 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void init() {
+        showProgress();
         retrofit.Callback<MovieResponse> callback = new retrofit.Callback<MovieResponse>() {
             @Override
             public void success(MovieResponse movieResponse, Response response) {
+                hideProgress();
                 movieDataset = movieResponse.results;
                 movieAdapter.updateData(movieDataset);
             }
 
             @Override
             public void failure(RetrofitError error) {
+                hideProgress();
                 Log.e(LOG_TAG, "Movie Response failed");
             }
         };

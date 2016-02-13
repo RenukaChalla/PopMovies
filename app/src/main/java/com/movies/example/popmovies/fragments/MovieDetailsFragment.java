@@ -53,6 +53,7 @@ public class MovieDetailsFragment extends Fragment {
     private LinearLayout trailersLabelLinearLayout;
     private LinearLayout trailersLinearLayout;
     private LinearLayout reviewsLinearLayout;
+    private LinearLayout emptyLayout;
     private List<TrailerDetails> trailers = new ArrayList<TrailerDetails>();
     private List<ReviewDetails> reviews = new ArrayList<ReviewDetails>();
     private String shareURL = "";
@@ -68,6 +69,7 @@ public class MovieDetailsFragment extends Fragment {
         trailersLinearLayout = (LinearLayout) rootview.findViewById(R.id.trailers_layout);
         reviewsLinearLayout = (LinearLayout) rootview.findViewById(R.id.reviews_layout);
         trailersLabelLinearLayout = (LinearLayout) rootview.findViewById(R.id.trailers_label_layout);
+        emptyLayout = (LinearLayout) rootview.findViewById(R.id.empty_layout);
         Log.v(LOG_TAG, "In moviedetails fragment" + DETAIL_MOVIE_VALUE);
         populateUI();
         setHasOptionsMenu(false);
@@ -86,6 +88,7 @@ public class MovieDetailsFragment extends Fragment {
         ImageView poster = (ImageView) rootview.findViewById(R.id.movie_details_poster_imageview);
 
         if (selectedMovie != null) {
+            emptyLayout.setVisibility(View.GONE);
             title.setText(selectedMovie.title);
             rating.setText(selectedMovie.vote_average.toString() + "/10");
             overview.setText(selectedMovie.overview);
@@ -96,6 +99,8 @@ public class MovieDetailsFragment extends Fragment {
             onFavButtonClick();
             Log.v("Movie Details: ", selectedMovie.title);
             init(selectedMovie.id.toString());
+        } else {
+            emptyLayout.setVisibility(View.VISIBLE);
         }
     }
 
