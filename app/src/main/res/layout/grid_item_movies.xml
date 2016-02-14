@@ -14,6 +14,7 @@
         android:adjustViewBounds="true"
         android:id="@+id/posterImgView"
         android:padding="3dp"
-        android:background="@drawable/highlight_selected_item"/>
+        android:background="@drawable/highlight_selected_item"
+        android:src="@drawable/loading"/>
 
 </LinearLayout>
