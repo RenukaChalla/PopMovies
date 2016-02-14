@@ -6,8 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.movies.example.popmovies.R;
 import com.movies.example.popmovies.models.Movie;
@@ -31,7 +31,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
         public ImageView picassoimg;
         private final String LOG_TAG = getClass().getName().toString();
 
-        public ViewHolder(GridLayout moviesGrid) {
+        public ViewHolder(LinearLayout moviesGrid) {
             super(moviesGrid);
             picassoimg = (ImageView) moviesGrid.findViewById(R.id.posterImgView);
             Log.i(LOG_TAG, "Adding Listener");
@@ -61,7 +61,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
                                                           int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.grid_item_movies, null, false);
-        ViewHolder vh = new ViewHolder((GridLayout) v);
+        ViewHolder vh = new ViewHolder((LinearLayout) v);
         return vh;
     }
 

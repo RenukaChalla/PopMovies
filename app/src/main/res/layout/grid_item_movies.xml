@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbars="vertical"
     android:useDefaultMargins="false"
     android:alignmentMode="alignBounds"
@@ -10,12 +9,12 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:text="New movie"
+        android:layout_height="match_parent"
+        android:scaleType="fitStart"
+        android:adjustViewBounds="true"
         android:id="@+id/posterImgView"
         android:padding="3dp"
         android:background="@drawable/highlight_selected_item"
         android:minHeight="310dp"/>
 
-</GridLayout>
+</LinearLayout>
