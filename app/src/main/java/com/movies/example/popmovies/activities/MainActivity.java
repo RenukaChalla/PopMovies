@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        onRetainCustomNonConfigurationInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -55,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         FavFragment fragment = new FavFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container_mainactivity, fragment, FAVFRAGMENT_TAG)
+                .addToBackStack(null)
                 .commit();
         getSupportFragmentManager().executePendingTransactions();
 
