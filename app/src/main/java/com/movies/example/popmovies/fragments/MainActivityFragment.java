@@ -1,5 +1,6 @@
 package com.movies.example.popmovies.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,8 +23,8 @@ import com.movies.example.popmovies.R;
 import com.movies.example.popmovies.activities.SettingsActivity;
 import com.movies.example.popmovies.adapters.MovieGridAdapter;
 import com.movies.example.popmovies.api.ApiManager;
-import com.movies.example.popmovies.models.Movie;
 import com.movies.example.popmovies.model.response.MovieResponse;
+import com.movies.example.popmovies.models.Movie;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -44,6 +45,7 @@ public class MainActivityFragment extends Fragment {
     private List<Movie> movieDataset;
     private final String LOG_TAG = getClass().getName();
     public static String MOVIEDETAILS;
+    private ProgressDialog progress;
 
     public MainActivityFragment() {
     }
@@ -66,6 +68,16 @@ public class MainActivityFragment extends Fragment {
         return rootview;
     }
 
+    private void showProgress() {
+        progress = ProgressDialog.show(getActivity(), "Please wait", "Connecting to server...", true);
+    }
+
+    private void hideProgress() {
+        if (progress != null && progress.isShowing()) {
+            progress.dismiss();
+        }
+    }
+
     public void onResume() {
         super.onResume();
         (movieAdapter).setOnItemClickListener(new MovieGridAdapter.ItemClickListener() {
@@ -83,15 +95,18 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void init() {
+        showProgress();
         retrofit.Callback<MovieResponse> callback = new retrofit.Callback<MovieResponse>() {
             @Override
             public void success(MovieResponse movieResponse, Response response) {
+                hideProgress();
                 movieDataset = movieResponse.results;
                 movieAdapter.updateData(movieDataset);
             }
 
             @Override
             public void failure(RetrofitError error) {
+                hideProgress();
                 Log.e(LOG_TAG, "Movie Response failed");
             }
         };
