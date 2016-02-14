@@ -23,8 +23,8 @@ import com.movies.example.popmovies.R;
 import com.movies.example.popmovies.activities.SettingsActivity;
 import com.movies.example.popmovies.adapters.MovieGridAdapter;
 import com.movies.example.popmovies.api.ApiManager;
-import com.movies.example.popmovies.models.Movie;
 import com.movies.example.popmovies.model.response.MovieResponse;
+import com.movies.example.popmovies.models.Movie;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -45,6 +45,7 @@ public class MainActivityFragment extends Fragment {
     private List<Movie> movieDataset;
     private final String LOG_TAG = getClass().getName();
     public static String MOVIEDETAILS;
+    private ProgressDialog progress;
 
     private ProgressDialog progress;
 
@@ -77,6 +78,16 @@ public class MainActivityFragment extends Fragment {
         init();
         setHasOptionsMenu(true);
         return rootview;
+    }
+
+    private void showProgress() {
+        progress = ProgressDialog.show(getActivity(), "Please wait", "Connecting to server...", true);
+    }
+
+    private void hideProgress() {
+        if (progress != null && progress.isShowing()) {
+            progress.dismiss();
+        }
     }
 
     public void onResume() {

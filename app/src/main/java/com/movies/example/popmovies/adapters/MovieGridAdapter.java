@@ -1,6 +1,8 @@
 package com.movies.example.popmovies.adapters;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,14 +66,23 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
         return vh;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (movieAdapterDataset.get(position) != null) {
             String posterURL = "http://image.tmdb.org/t/p/w185/" + movieAdapterDataset.get(position).poster_path;
             Log.v("In adapter", posterURL);
-            Picasso.with(mContext).load(posterURL).placeholder(mContext.getDrawable(R.drawable.loading)).into(holder.picassoimg);
-        } else
-            Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg").placeholder(mContext.getDrawable(R.drawable.loading)).into(holder.picassoimg);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Picasso.with(mContext).load(posterURL).placeholder(mContext.getDrawable(R.drawable.loading)).into(holder.picassoimg);
+            } else
+                Picasso.with(mContext).load(posterURL).into(holder.picassoimg);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg").placeholder(mContext.getDrawable(R.drawable.loading)).into(holder.picassoimg);
+            } else
+                Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185//oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg").into(holder.picassoimg);
+        }
+
     }
 
     @Override

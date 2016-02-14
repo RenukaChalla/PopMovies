@@ -99,7 +99,7 @@ public class MovieDetailsFragment extends Fragment {
             onFavButtonClick();
             Log.v("Movie Details: ", selectedMovie.title);
             init(selectedMovie.id.toString());
-        } else {
+        } else{
             emptyLayout.setVisibility(View.VISIBLE);
         }
     }
