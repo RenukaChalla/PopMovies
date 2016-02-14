@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:scrollbars="vertical"
     android:useDefaultMargins="false"
-    android:alignmentMode="alignBounds">
+    android:alignmentMode="alignBounds"
+    android:columnOrderPreserved="false">
 
     <ImageView
         android:layout_width="match_parent"

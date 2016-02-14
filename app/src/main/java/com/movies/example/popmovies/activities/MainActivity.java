@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             }
         } else {
             mTwoPane = false;
+
         }
     }
 

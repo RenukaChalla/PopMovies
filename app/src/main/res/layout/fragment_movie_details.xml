@@ -125,15 +125,15 @@
         </LinearLayout>
     </ScrollView>
     <LinearLayout
-        android:id="@+id/empty_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
+        android:id="@+id/empty_layout"
+        android:orientation="horizontal"
+        android:background="@android:color/white">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/movies"
             android:scaleType="centerInside"/>
-        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>

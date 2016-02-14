@@ -45,8 +45,8 @@ public class MainActivityFragment extends Fragment {
     private List<Movie> movieDataset;
     private final String LOG_TAG = getClass().getName();
     public static String MOVIEDETAILS;
-
     private ProgressDialog progress;
+
     public MainActivityFragment() {
     }
 
